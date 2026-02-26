@@ -44,7 +44,7 @@ def get_url(template, **kwargs):
 def get_models(page_url):
     model_list = []
 
-    model_list.append({"name": "张三1", "url": "https://www.doewe.com/{page}.html"})
+    model_list.append({"name": "cat", "url": page_url})
     # model_list.append({"name": "张三2", "url": "https://www.doewe.com/{page}.html"})
     # model_list.append({"name": "张三3", "url": "https://www.doewe.com/{page}.html"})
 
@@ -54,13 +54,25 @@ def get_models(page_url):
 def get_model_img_urls(model_url):
     img_urls = []
 
-    img_urls.append({
-        "img_url": "https://gips0.baidu.com/it/u=1690853528,2506870245&fm=3028&app=3028&f=JPEG&fmt=auto?w=1024&h=1024"
-    })
+    response = requests.get(model_url, timeout=5, headers=headers)
+    soup = BeautifulSoup(response.text, "html.parser")
 
-    # img_urls.append({
-    #     "img_url": "https://gips3.baidu.com/it/u=1022347589,1106887837&fm=3028&app=3028&f=JPEG&fmt=auto?w=960&h=1280"
-    # })
+    # 查找具有特定class的div标签
+    # container = soup.find('div', class_='container')
+    # 在该div下提取所有p标签
+    # p_tags = container.find_all('p')
+
+    img_tags = soup.find_all("img")
+
+    for i, img in enumerate(img_tags):
+        img_url = img.get("src") or img.get("data-src")
+        if not img_url:
+            continue
+        img_full_url = urljoin(model_url, img_url)
+        if img_full_url and img_full_url.startswith('http'):
+            img_urls.append({
+                "img_url": img_full_url
+            })
 
     return img_urls
 
@@ -75,17 +87,17 @@ def save_statis(total, success_count, file_dir, model_info):
 
 def download_model_imgs(page, model_info, img_urls, file_dir):
     success_count = 0
-    for index in range(len(img_urls)):
+    total = len(img_urls)
+    for index in range(total):
         try:
             img_data = requests.get(img_urls[index]["img_url"], timeout=5, headers=headers).content
             with open(f"{file_dir}/image_{index + 1}.jpg", "wb") as f:
                 f.write(img_data)
             success_count = success_count + 1
-            print(f"下载完成, page:{page}, model_url:{model_info["url"]}, img_url:{img_urls[index]["img_url"]}")
+            print(f"下载完成, {index+1}/{total}, page:{page}, model_name:{model_info["name"]}, img_url:{img_urls[index]["img_url"]}")
         except Exception as e:
-            print(f"下载失败, page:{page}, model_url:{model_info["url"]}, exception:{e}")
+            print(f"下载失败, {index+1}/{total}, page:{page}, model_name:{model_info["name"]}, exception:{e}")
 
-    total = len(img_urls)
     if success_count < 0.6 * total:  # 下载成功率小于0.6
         save_statis(total, success_count, file_dir, model_info)
 
@@ -95,15 +107,20 @@ def save_images(template, base_dir="images", min_page=1, max_page=3000):
         sub_dir = format_number(page // 100)
         page_url = get_url(template, page=page)  # 获取当前页码的URL地址
         models = get_models(page_url)  # 获取当前页的所有model, {"name": "name", "url": "url"}
+        if not models:
+            continue
         for model in models:  # 遍历当前页面的所有model
             file_dir = os.path.join(base_dir, sub_dir, format_number(page), model["name"])
             os.makedirs(file_dir, exist_ok=True)
 
             img_urls = get_model_img_urls(model["url"])  # 获取当前model的所有图片地址, {"img_url": "img_url"}
+            if not img_urls:
+                continue
             print()
-            print("当前下载, page:", page, ", model:", model["name"], ", 图片数量:", len(img_urls))
+            print("当前下载, page:", page, ", model:", model["name"], ", url:", model["url"], ", 图片数量:", len(img_urls))
             download_model_imgs(page, model, img_urls, file_dir)  # 下载当前model的所有图片
 
 
 url_template = "https://www.doewe.com/{page}.html"
-save_images(url_template, min_page=1, max_page=120)
+url_template = "https://cn.bing.com/images/search?q=cat&form=HDRSC2&first={page}"
+save_images(url_template, min_page=1, max_page=3)
