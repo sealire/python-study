@@ -286,8 +286,8 @@ def multi_thread_download():
     thread7 = threading.Thread(target=download_thread7)
     thread7.start()
 
-    thread8 = threading.Thread(target=download_thread8)
-    thread8.start()
+    # thread8 = threading.Thread(target=download_thread8)
+    # thread8.start()
 
 
 def single_thread_download():
@@ -298,7 +298,7 @@ def single_thread_download():
     download_thread5()  # 西方
     download_thread6()  # 西方
     download_thread7()  # Cosplay
-    download_thread8()  # 秀人网
+    # download_thread8()  # 秀人网
 
 
 if __name__ == "__main__":
