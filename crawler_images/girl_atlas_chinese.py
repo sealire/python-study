@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
-headers = {"User-Agent": "Mozilla/5.0"}
+from crawler_images import constants
 
 
 class GirlAtlasChinese:
@@ -16,7 +16,7 @@ class GirlAtlasChinese:
     def get_models(self, page_url):
         model_list = []
 
-        response = requests.get(page_url, timeout=5, headers=headers)
+        response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
         soup = BeautifulSoup(response.text, "html.parser")
 
         # print(response.text)
@@ -36,7 +36,7 @@ class GirlAtlasChinese:
     def get_model_image_urls(self, model_url):
         image_urls = []
 
-        response = requests.get(model_url, timeout=5, headers=headers)
+        response = requests.get(model_url, timeout=constants.http_timeout, headers=constants.http_headers)
         soup = BeautifulSoup(response.text, "html.parser")
         # print(response.text)
 

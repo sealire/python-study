@@ -5,12 +5,12 @@ from urllib.parse import urljoin
 from crawler_images import constants
 
 
-class GirlAtlasUgirls:
+class GirlAtlasSabra:
 
     def get_website_info(self):
         return {
-            "title": "girl-atlas-Ugirls",
-            "url_template": "https://girl-atlas.xyz/tag?id=57653d1558e03930fbb7e50e&p={page}",
+            "title": "girl-atlas-Sabra",
+            "url_template": "https://girl-atlas.xyz/tag?id=57653d1458e03930fbb7e417&p={page}",
         }
 
     def get_models(self, page_url):

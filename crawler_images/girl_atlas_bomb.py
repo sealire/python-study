@@ -5,18 +5,18 @@ from urllib.parse import urljoin
 from crawler_images import constants
 
 
-class GirlAtlasUgirls:
+class GirlAtlasBomb:
 
     def get_website_info(self):
         return {
-            "title": "girl-atlas-Ugirls",
-            "url_template": "https://girl-atlas.xyz/tag?id=57653d1558e03930fbb7e50e&p={page}",
+            "title": "girl-atlas-Bomb",
+            "url_template": "https://girl-atlas.xyz/tag?id=57653d1558e03930fbb7e4c9&p={page}",
         }
 
     def get_models(self, page_url):
         model_list = []
 
-        response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
+        response = requests.get(page_url, timeout=constants.constants.http_timeout, headers=constants.http_headers)
         soup = BeautifulSoup(response.text, "html.parser")
 
         # print(response.text)
