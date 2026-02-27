@@ -13,10 +13,30 @@ class GirlAtlasSabra:
             "url_template": "https://girl-atlas.xyz/tag?id=57653d1458e03930fbb7e417&p={page}",
         }
 
+    def check_page_exist(self, page_url):
+        try:
+            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
+        except requests.exceptions.Timeout:
+            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
+            return False
+        soup = BeautifulSoup(response.text, "html.parser")
+        container = soup.find('div', id='div-tag')
+        if not container:
+            return False
+        model_cards = container.find_all("div", class_='card-body')
+        if model_cards:
+            return True
+        else:
+            return False
+
     def get_models(self, page_url):
         model_list = []
 
-        response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
+        try:
+            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
+        except requests.exceptions.Timeout:
+            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
+            return False
         soup = BeautifulSoup(response.text, "html.parser")
 
         # print(response.text)
@@ -36,7 +56,11 @@ class GirlAtlasSabra:
     def get_model_image_urls(self, model_url):
         image_urls = []
 
-        response = requests.get(model_url, timeout=constants.http_timeout, headers=constants.http_headers)
+        try:
+            response = requests.get(model_url, timeout=constants.http_timeout, headers=constants.http_headers)
+        except requests.exceptions.Timeout:
+            print(f"EXCEPT-获取Model页面超时, model_url:{model_url}")
+            return image_urls
         soup = BeautifulSoup(response.text, "html.parser")
         # print(response.text)
 

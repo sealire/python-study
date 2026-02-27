@@ -5,12 +5,12 @@ from urllib.parse import urljoin
 from crawler_images import constants
 
 
-class GirlAtlasGraphis:
+class GirlAtlasStrapLez:
 
     def get_website_info(self):
         return {
-            "title": "girl-atlas-Graphis",
-            "url_template": "https://girl-atlas.xyz/tag?id=57653d1458e03930fbb7e35c&p={page}",
+            "title": "girl-atlas-StrapLez",
+            "url_template": "https://girl-atlas.xyz/tag?id=6758a086cd3f953c1e3734dc&p={page}",
         }
 
     def check_page_exist(self, page_url):
@@ -36,10 +36,8 @@ class GirlAtlasGraphis:
             response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
         except requests.exceptions.Timeout:
             print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
-            return False
+            return model_list
         soup = BeautifulSoup(response.text, "html.parser")
-
-        # print(response.text)
         container = soup.find('div', id='div-tag')
         model_cards = container.find_all("div", class_='card-body')
         for i, model_card in enumerate(model_cards):
@@ -61,6 +59,7 @@ class GirlAtlasGraphis:
         except requests.exceptions.Timeout:
             print(f"EXCEPT-获取Model页面超时, model_url:{model_url}")
             return image_urls
+
         soup = BeautifulSoup(response.text, "html.parser")
         # print(response.text)
 

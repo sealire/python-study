@@ -1,3 +1,4 @@
+import time
 from operator import truediv
 
 import requests
@@ -7,19 +8,37 @@ import threading
 from crawler_images import constants
 from crawler_images.girl_atlas import GirlAtlas
 from crawler_images.girl_atlas_Japanese import GirlAtlasJapanese
+from crawler_images.girl_atlas_artgravia import GirlAtlasArtGravia
+from crawler_images.girl_atlas_bimilstory import GirlAtlasBimilstory
 from crawler_images.girl_atlas_bomb import GirlAtlasBomb
 from crawler_images.girl_atlas_chinese import GirlAtlasChinese
+from crawler_images.girl_atlas_denudeart import GirlAtlasDeNudeArt
+from crawler_images.girl_atlas_femjoy import GirlAtlasFemjoy
 from crawler_images.girl_atlas_graphis import GirlAtlasGraphis
+from crawler_images.girl_atlas_hegreart import GirlAtlasHegreArt
 from crawler_images.girl_atlas_jvid import GirlAtlasJvid
 from crawler_images.girl_atlas_korean import GirlAtlasKorean
+from crawler_images.girl_atlas_leehee import GirlAtlasLeehee
 from crawler_images.girl_atlas_ligui import GirlAtlasLigui
+from crawler_images.girl_atlas_metart import GirlAtlasMetArt
+from crawler_images.girl_atlas_metartx import GirlAtlasMetArtX
+from crawler_images.girl_atlas_mplstudios import GirlAtlasMPLStudios
+from crawler_images.girl_atlas_pbplus import GirlAtlasPbplus
+from crawler_images.girl_atlas_perfect18 import GirlAtlasPerfect18
+from crawler_images.girl_atlas_photodromm import GirlAtlasPhotoDromm
+from crawler_images.girl_atlas_rylskyart import GirlAtlasRylskyArt
 from crawler_images.girl_atlas_sabra import GirlAtlasSabra
+from crawler_images.girl_atlas_sexart import GirlAtlasSexArt
+from crawler_images.girl_atlas_strapLez import GirlAtlasStrapLez
+from crawler_images.girl_atlas_stunning18 import GirlAtlasStunning18
 from crawler_images.girl_atlas_ugirls import GirlAtlasUgirls
+from crawler_images.girl_atlas_w4b import GirlAtlasW4b
 from crawler_images.girl_atlas_wanibooks import GirlAtlasWanibooks
 from crawler_images.girl_atlas_wpb_net import GirlAtlasWpbNet
 from crawler_images.girl_atlas_xingyan import GirlAtlasXingyan
 from crawler_images.girl_atlas_xiuren import GirlAtlasXiuren
 from crawler_images.girl_atlas_ysvw import GirlAtlasYsvw
+from crawler_images.girl_atlas_zishy import GirlAtlasZishy
 
 
 # 线程1
@@ -27,6 +46,7 @@ def download_thread1():
     download(GirlAtlasChinese(), 1)
     download(GirlAtlasJvid(), 1)
     download(GirlAtlasWanibooks(), 1)
+    download(GirlAtlasLeehee(), 1)
 
 
 # 线程2
@@ -34,6 +54,10 @@ def download_thread2():
     download(GirlAtlasXiuren(), 2)
     download(GirlAtlasJapanese(), 2)
     download(GirlAtlasYsvw(), 2)
+    download(GirlAtlasArtGravia(), 2)
+    download(GirlAtlasUgirls(), 2)
+    download(GirlAtlasGraphis(), 2)
+    download(GirlAtlasBomb(), 2)
 
 
 # 线程3
@@ -41,20 +65,37 @@ def download_thread3():
     download(GirlAtlasXingyan(), 3)
     download(GirlAtlas(), 3)
     download(GirlAtlasSabra(), 3)
+    download(GirlAtlasBimilstory(), 3)
+    download(GirlAtlasLigui(), 3)
+    download(GirlAtlasWpbNet(), 3)
+    download(GirlAtlasKorean(), 3)
 
 
 # 线程4
 def download_thread4():
-    download(GirlAtlasUgirls(), 4)
-    download(GirlAtlasGraphis(), 4)
-    download(GirlAtlasBomb(), 4)
+    download(GirlAtlasMetArt(), 4)
+    download(GirlAtlasStunning18(), 4)
+    download(GirlAtlasDeNudeArt(), 4)
+    download(GirlAtlasPhotoDromm(), 4)
+    download(GirlAtlasMPLStudios(), 4)
 
 
 # 线程5
 def download_thread5():
-    download(GirlAtlasLigui(), 5)
-    download(GirlAtlasWpbNet(), 5)
-    download(GirlAtlasKorean(), 5)
+    download(GirlAtlasMetArtX(), 5)
+    download(GirlAtlasFemjoy(), 5)
+    download(GirlAtlasZishy(), 5)
+    download(GirlAtlasPerfect18(), 5)
+    download(GirlAtlasRylskyArt(), 5)
+
+
+# 线程6
+def download_thread6():
+    download(GirlAtlasStrapLez(), 6)
+    download(GirlAtlasSexArt(), 6)
+    download(GirlAtlasPbplus(), 6)
+    download(GirlAtlasW4b(), 6)
+    download(GirlAtlasHegreArt(), 6)
 
 
 def create_website_info(website_title):
@@ -70,13 +111,16 @@ def create_website_info(website_title):
 def download_image(website_downloader, website_info, thread_id):
     for page in range(1, constants.largest_page):  # 遍历页码
         try:
-            page_url = get_page_url(website_info["url_template"], page=page)  # 获取当前页码的URL地址，如果没有该页码就返回空
+            page_url = get_page_url(website_downloader, website_info["url_template"],
+                                    page=page)  # 获取当前页码的URL地址，如果没有该页码就返回空
             if not page_url:
                 continue
+
+            time.sleep(10)  # 每个页码，等待10秒
             download_page_image(website_downloader, website_info, page, page_url, thread_id)
         except Exception as e:
             print(
-                f"EXCEPT-Page遍历下载异常, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, exception:{e}")
+                f"EXCEPT-Page遍历下载异常, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, url_template:{website_info["url_template"]}, exception:{e}")
 
 
 def download_page_image(website_downloader, website_info, page, page_url, thread_id):
@@ -93,13 +137,12 @@ def download_page_image(website_downloader, website_info, page, page_url, thread
                     f"Model已下载, thread:{thread_id}, website_title:{website_info["title"]}, model_name:{model["name"]}, model_url:{model["url"]}")
                 continue
 
-            model_image_dir = create_model_dir(website_info["title"], page, model["name"])
-            model["dir"] = model_image_dir
+            time.sleep(10)  # 每个model页面，等待10秒
             download_model_images(website_info["title"], website_downloader, page, model_index, model_count, model,
                                   thread_id)
         except Exception as e:
             print(
-                f"EXCEPT-Model遍历下载异常, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model_index:{model_index},, exception:{e}")
+                f"EXCEPT-Model遍历下载异常, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model_index:{model_index}, model_url:{models[model_index]["url"]}, exception:{e}")
 
 
 def download_model_images(website_title, website_downloader, page, model_index, model_count, model, thread_id):
@@ -107,9 +150,12 @@ def download_model_images(website_title, website_downloader, page, model_index, 
     if not image_urls:
         return
 
+    model_image_dir = create_model_dir(website_title, page, model["name"])
+    model["dir"] = model_image_dir
+
     print()
     print(
-        f"当前下载, thread:{thread_id}, website_title:{website_title}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url:{model["url"]}, 图片数量:{len(image_urls)}")
+        f"当前下载Model, thread:{thread_id}, website_title:{website_title}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url:{model["url"]}, 图片数量:{len(image_urls)}")
     save_model_images(website_title, page, model_index, model_count, model, image_urls, thread_id)  # 下载当前model的所有图片
 
 
@@ -118,7 +164,8 @@ def save_model_images(website_title, page, model_index, model_count, model, imag
     total = len(image_urls)
     for index in range(total):
         try:
-            img_data = requests.get(image_urls[index]["image_url"], timeout=constants.http_timeout, headers=constants.http_headers).content
+            img_data = requests.get(image_urls[index]["image_url"], timeout=constants.http_timeout,
+                                    headers=constants.http_headers).content
             with open(f"{model["dir"]}/image_{index + 1}.jpg", "wb") as f:
                 f.write(img_data)
             success_count = success_count + 1
@@ -126,7 +173,7 @@ def save_model_images(website_title, page, model_index, model_count, model, imag
                 f"下载完成, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, image_url:{image_urls[index]["image_url"]}")
         except Exception as e:
             print(
-                f"EXCEPT-Image下载失败, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, exception:{e}")
+                f"EXCEPT-Image下载失败, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, image_url:{image_urls[index]["image_url"]}, exception:{e}")
 
     if success_count < 0.9 * total:  # 下载成功率小于0.6
         save_statis(total, success_count, model)
@@ -134,23 +181,12 @@ def save_model_images(website_title, page, model_index, model_count, model, imag
         save_model_url_to_file(website_title, model)
 
 
-def get_page_url(url_template, **kwargs):
+def get_page_url(website_downloader, url_template, **kwargs):
     url = url_template.format(**kwargs)
-    if check_page_exist(url):
+    if website_downloader.check_page_exist(url):
         return url
     else:
         return ""
-
-
-def check_page_exist(url):
-    try:
-        response = requests.head(url, timeout=constants.http_timeout)
-        if response.status_code == 200:
-            return True
-        else:
-            return False
-    except requests.exceptions.RequestException as e:
-        return False
 
 
 def create_model_dir(website_title, page, model_name):
@@ -214,13 +250,17 @@ def multi_thread_download():
     thread5 = threading.Thread(target=download_thread5)
     thread5.start()
 
+    thread6 = threading.Thread(target=download_thread6)
+    thread6.start()
+
 
 def single_thread_download():
-    download_thread1()
-    download_thread2()
-    download_thread3()
-    download_thread4()
-    download_thread5()
+    download_thread1()  # 东方
+    download_thread2()  # 东方
+    download_thread3()  # 东方
+    download_thread4()  # 西方
+    download_thread5()  # 西方
+    download_thread6()  # 西方
 
 
 if __name__ == "__main__":

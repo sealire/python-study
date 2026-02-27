@@ -5,12 +5,12 @@ from urllib.parse import urljoin
 from crawler_images import constants
 
 
-class GirlAtlasGraphis:
+class GirlAtlasMPLStudios:
 
     def get_website_info(self):
         return {
-            "title": "girl-atlas-Graphis",
-            "url_template": "https://girl-atlas.xyz/tag?id=57653d1458e03930fbb7e35c&p={page}",
+            "title": "girl-atlas-MPLStudios",
+            "url_template": "https://girl-atlas.xyz/tag?id=67248fb43197e32d3bd1cdb5&p={page}",
         }
 
     def check_page_exist(self, page_url):
