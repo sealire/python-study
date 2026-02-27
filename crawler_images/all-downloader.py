@@ -12,7 +12,12 @@ from crawler_images.girl_atlas_artgravia import GirlAtlasArtGravia
 from crawler_images.girl_atlas_bimilstory import GirlAtlasBimilstory
 from crawler_images.girl_atlas_bomb import GirlAtlasBomb
 from crawler_images.girl_atlas_chinese import GirlAtlasChinese
+from crawler_images.girl_atlas_cosplay import GirlAtlasCosplay
 from crawler_images.girl_atlas_denudeart import GirlAtlasDeNudeArt
+from crawler_images.girl_atlas_eroticbeauty import GirlAtlasEroticBeauty
+from crawler_images.girl_atlas_eternaldesire import GirlAtlasEternalDesire
+from crawler_images.girl_atlas_famegirls import GirlAtlasFameGirls
+from crawler_images.girl_atlas_fantia import GirlAtlasFantia
 from crawler_images.girl_atlas_femjoy import GirlAtlasFemjoy
 from crawler_images.girl_atlas_graphis import GirlAtlasGraphis
 from crawler_images.girl_atlas_hegreart import GirlAtlasHegreArt
@@ -20,23 +25,29 @@ from crawler_images.girl_atlas_jvid import GirlAtlasJvid
 from crawler_images.girl_atlas_korean import GirlAtlasKorean
 from crawler_images.girl_atlas_leehee import GirlAtlasLeehee
 from crawler_images.girl_atlas_ligui import GirlAtlasLigui
+from crawler_images.girl_atlas_maycontaingirl import GirlAtlasMayContainGirl
 from crawler_images.girl_atlas_metart import GirlAtlasMetArt
 from crawler_images.girl_atlas_metartx import GirlAtlasMetArtX
 from crawler_images.girl_atlas_mplstudios import GirlAtlasMPLStudios
+from crawler_images.girl_atlas_nudeinrussia import GirlAtlasNudeInRussia
+from crawler_images.girl_atlas_patreon import GirlAtlasPatreon
 from crawler_images.girl_atlas_pbplus import GirlAtlasPbplus
 from crawler_images.girl_atlas_perfect18 import GirlAtlasPerfect18
 from crawler_images.girl_atlas_photodromm import GirlAtlasPhotoDromm
 from crawler_images.girl_atlas_rylskyart import GirlAtlasRylskyArt
 from crawler_images.girl_atlas_sabra import GirlAtlasSabra
 from crawler_images.girl_atlas_sexart import GirlAtlasSexArt
+from crawler_images.girl_atlas_showybeauty import GirlAtlasShowyBeauty
 from crawler_images.girl_atlas_strapLez import GirlAtlasStrapLez
 from crawler_images.girl_atlas_stunning18 import GirlAtlasStunning18
+from crawler_images.girl_atlas_teendreams import GirlAtlasTeenDreams
 from crawler_images.girl_atlas_ugirls import GirlAtlasUgirls
 from crawler_images.girl_atlas_w4b import GirlAtlasW4b
 from crawler_images.girl_atlas_wanibooks import GirlAtlasWanibooks
 from crawler_images.girl_atlas_wpb_net import GirlAtlasWpbNet
 from crawler_images.girl_atlas_xingyan import GirlAtlasXingyan
 from crawler_images.girl_atlas_xiuren import GirlAtlasXiuren
+from crawler_images.girl_atlas_xrwang import GirlAtlasXrwang
 from crawler_images.girl_atlas_ysvw import GirlAtlasYsvw
 from crawler_images.girl_atlas_zishy import GirlAtlasZishy
 
@@ -78,6 +89,9 @@ def download_thread4():
     download(GirlAtlasDeNudeArt(), 4)
     download(GirlAtlasPhotoDromm(), 4)
     download(GirlAtlasMPLStudios(), 4)
+    download(GirlAtlasFameGirls(), 4)
+    download(GirlAtlasNudeInRussia(), 4)
+    download(GirlAtlasTeenDreams(), 4)
 
 
 # 线程5
@@ -87,6 +101,9 @@ def download_thread5():
     download(GirlAtlasZishy(), 5)
     download(GirlAtlasPerfect18(), 5)
     download(GirlAtlasRylskyArt(), 5)
+    download(GirlAtlasMayContainGirl(), 5)
+    download(GirlAtlasShowyBeauty(), 5)
+    download(GirlAtlasEternalDesire(), 5)
 
 
 # 线程6
@@ -96,6 +113,19 @@ def download_thread6():
     download(GirlAtlasPbplus(), 6)
     download(GirlAtlasW4b(), 6)
     download(GirlAtlasHegreArt(), 6)
+    download(GirlAtlasEroticBeauty(), 6)
+
+
+# 线程7
+def download_thread7():
+    download(GirlAtlasPatreon(), 7)
+    download(GirlAtlasFantia(), 7)
+    download(GirlAtlasCosplay(), 7)
+
+# 线程8
+def download_thread8():
+    download(GirlAtlasXrwang(), 8)
+
 
 
 def create_website_info(website_title):
@@ -253,6 +283,12 @@ def multi_thread_download():
     thread6 = threading.Thread(target=download_thread6)
     thread6.start()
 
+    thread7 = threading.Thread(target=download_thread7)
+    thread7.start()
+
+    thread8 = threading.Thread(target=download_thread8)
+    thread8.start()
+
 
 def single_thread_download():
     download_thread1()  # 东方
@@ -261,6 +297,8 @@ def single_thread_download():
     download_thread4()  # 西方
     download_thread5()  # 西方
     download_thread6()  # 西方
+    download_thread7()  # Cosplay
+    download_thread8()  # 秀人网
 
 
 if __name__ == "__main__":
