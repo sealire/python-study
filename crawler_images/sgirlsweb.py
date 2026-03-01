@@ -112,9 +112,10 @@ class Sgirlsweb:
         container = soup.find('ul', id='iids')
         image_tags = container.find_all("li", class_='fl-photo-item')
         for i, image in enumerate(image_tags):
-            img = image.find("a", class_="thumb").find("img")
+            img = image.find("a", class_="athumb").find("img")
             image_url = img.get("src")
             if image_url and image_url.startswith('http'):
+                image_url = image_url.replace("static3", "static1")
                 image_url = image_url.replace("thumbs-photos/480", "")
                 index = image_url.rfind("/") + 1
                 image_url = image_url[:index] + "mibogirl-" + image_url[index:]

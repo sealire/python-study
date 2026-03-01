@@ -10,6 +10,7 @@ import requests
 from aiohttp import TCPConnector, ClientSession
 
 from crawler_images import constants
+from crawler_images.common import is_selected_model
 
 headers = {
     'Host': 'penthouse-galleries.net',

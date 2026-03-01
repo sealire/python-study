@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
+from crawler_images.common import is_selected_model
 
 
 class Deskbabesgirls:

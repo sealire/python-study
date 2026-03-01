@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 from crawler_images import constants
+from crawler_images.common import is_selected_model
 
 
 class GirlAtlasKorean:
@@ -48,6 +49,8 @@ class GirlAtlasKorean:
             model_url = model_card_h4.get("href")
             model_url = urljoin(page_url, model_url)
             model_name = model_card_h4.string
+            if model_names and not is_selected_model(model_name, model_names):
+                continue
             # print(model_name, '###############', model_url)
             model_list.append({"name": model_name, "urls": [model_url]})
 

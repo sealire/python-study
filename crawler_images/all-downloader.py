@@ -5,6 +5,7 @@ import os
 import threading
 
 from crawler_images import constants
+from crawler_images.common import is_selected_model
 from crawler_images.istrippergirls import Istrippergirls
 from crawler_images.sgirlsweb import Sgirlsweb
 from crawler_images.virtuagirlgirls import Virtuagirlgirls
@@ -90,10 +91,10 @@ def save_model_images(website_title, page, model_index, model_count, model, mode
                 f.write(img_data)
             success_count = success_count + 1
             print(
-                f"下载完成, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, image_url:{image_urls[index]["image_url"]}")
+                f"下载完成, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index}, image_url:{image_urls[index]["image_url"]}")
         except Exception as e:
             print(
-                f"EXCEPT-Image下载失败, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, image_url:{image_urls[index]["image_url"]}, exception:{e}")
+                f"EXCEPT-Image下载失败, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index}, image_url:{image_urls[index]["image_url"]}, exception:{e}")
 
     if success_count < 0.9 * total:  # 下载成功率小于0.6
         save_statis(total, success_count, model, model_url)
@@ -175,7 +176,7 @@ def multi_thread_download_website(website_downloaders, model_names, min_page=1, 
 if __name__ == "__main__":
     multi_thread = True
     downloaders = [Sgirlsweb()]
-    names = ["stacy cruz", "natasha nice", "lucy li"]
+    names = ["stacy cruz", "natasha nice", "lucy li", "jia lissa"]
     if multi_thread:
         multi_thread_download_website(downloaders, names)
     else:
