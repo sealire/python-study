@@ -29,7 +29,7 @@ class GirlAtlasNudeInRussia:
         else:
             return False
 
-    def get_models(self, page_url):
+    def get_models(self, page_url, model_names):
         model_list = []
 
         try:
@@ -49,7 +49,7 @@ class GirlAtlasNudeInRussia:
             model_url = urljoin(page_url, model_url)
             model_name = model_card_h4.string
             # print(model_name, '###############', model_url)
-            model_list.append({"name": model_name, "url": model_url})
+            model_list.append({"name": model_name, "urls": [model_url]})
 
         return model_list
 

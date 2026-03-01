@@ -28,7 +28,7 @@ class Deskbabesgirls:
         else:
             return False
 
-    def get_models(self, page_url):
+    def get_models(self, page_url, model_names):
         model_list = []
 
         try:
@@ -51,7 +51,7 @@ class Deskbabesgirls:
             model_name = model_name.replace('|', "")
             model_name = model_name.replace('\'', "")
             # print(model_name, '###############', model_url)
-            model_list.append({"name": model_name, "url": model_url})
+            model_list.append({"name": model_name, "urls": [model_url]})
 
         return model_list
 

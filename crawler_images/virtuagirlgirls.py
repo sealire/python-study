@@ -1,7 +1,10 @@
+import re
+
 import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
+from crawler_images.common import is_selected_model
 
 
 class Virtuagirlgirls:
@@ -28,7 +31,7 @@ class Virtuagirlgirls:
         else:
             return False
 
-    def get_models(self, page_url):
+    def get_models(self, page_url, model_names):
         model_list = []
 
         try:
@@ -47,11 +50,16 @@ class Virtuagirlgirls:
             model_url = model_card.get("href")
             # model_url = urljoin(page_url, model_url)
             model_name = model_card.find("img").get("alt")
-            model_name = model_name.replace('/', "")
-            model_name = model_name.replace('|', "")
-            model_name = model_name.replace('\'', "")
+            model_name = re.sub(r'[?/\'|]', '', model_name)
+            model_name = model_name.strip()
+            if model_names and not is_selected_model(model_name, model_names):
+                continue
+            # model_name = model_name.replace('/', "")
+            # model_name = model_name.replace('|', "")
+            # model_name = model_name.replace('\'', "")
+            # model_name = model_name.replace('?', "")
             # print(model_name, '###############', model_url)
-            model_list.append({"name": model_name, "url": model_url})
+            model_list.append({"name": model_name, "urls": [model_url]})
 
         return model_list
 

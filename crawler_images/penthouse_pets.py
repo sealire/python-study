@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
+from crawler_images.common import is_selected_model
 
 
 class PenthousePets:
@@ -28,7 +29,7 @@ class PenthousePets:
         else:
             return False
 
-    def get_models(self, page_url):
+    def get_models(self, page_url, model_names):
         model_list = []
 
         try:
@@ -47,8 +48,10 @@ class PenthousePets:
             model_url = model_card_a.get("href")
             # model_url = urljoin(page_url, model_url)
             model_name = model_card_a.find("img").get("alt")
+            if model_names and not is_selected_model(model_name, model_names):
+                continue
             # print(model_name, '###############', model_url)
-            model_list.append({"name": model_name, "url": model_url})
+            model_list.append({"name": model_name, "urls": [model_url]})
 
         return model_list
 
