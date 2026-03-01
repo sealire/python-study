@@ -24,7 +24,7 @@ def create_website_info(website_title):
 def download_image(website_downloader, website_info, thread_id, model_names, min_page, max_page):
     for page in range(min_page, max_page):  # 遍历页码
         try:
-            page_url = get_page_url(website_downloader, website_info["url_template"],
+            page_url = get_page_url(website_downloader, website_info["url_template"], page,
                                     page=page)  # 获取当前页码的URL地址，如果没有该页码就返回空
             if not page_url:
                 continue
@@ -36,7 +36,7 @@ def download_image(website_downloader, website_info, thread_id, model_names, min
 
 
 def download_page_image(website_downloader, website_info, page, page_url, thread_id, model_names):
-    models = website_downloader.get_models(page_url, model_names)  # 获取当前页的所有model, {"name": "name", "url": "url"}
+    models = website_downloader.get_models(page, page_url, model_names)  # 获取当前页的所有model, {"name": "name", "url": "url"}
     model_count = len(models)
     if model_count < 1:
         return
@@ -54,7 +54,7 @@ def download_page_image(website_downloader, website_info, page, page_url, thread
 
                 for second in range(1, 11):  # 每个页码，等待10秒
                     print(
-                        f"Model遍历等待, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model_index:{model_index}, model_url_index:{model_url_index + 1}, model_url:{model_url}, {second}秒")
+                        f"Model遍历等待, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model_index:{model_index}, model_name:{model["name"]}, model_url_index:{model_url_index + 1}, model_url:{model_url}, {second}秒")
                     time.sleep(1)
                 download_model_images(website_info["title"], website_downloader, page, model_index, model_count, model,
                                       model_url_index, model_url, thread_id)
@@ -91,10 +91,10 @@ def save_model_images(website_title, page, model_index, model_count, model, mode
                 f.write(img_data)
             success_count = success_count + 1
             print(
-                f"下载完成, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index}, image_url:{image_urls[index]["image_url"]}")
+                f"下载完成, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index + 1}, image_url:{image_urls[index]["image_url"]}")
         except Exception as e:
             print(
-                f"EXCEPT-Image下载失败, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index}, image_url:{image_urls[index]["image_url"]}, exception:{e}")
+                f"EXCEPT-Image下载失败, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index + 1}, image_url:{image_urls[index]["image_url"]}, exception:{e}")
 
     if success_count < 0.9 * total:  # 下载成功率小于0.6
         save_statis(total, success_count, model, model_url)
@@ -102,9 +102,9 @@ def save_model_images(website_title, page, model_index, model_count, model, mode
         save_model_url_to_file(website_title, model, model_url)
 
 
-def get_page_url(website_downloader, url_template, **kwargs):
+def get_page_url(website_downloader, url_template, page, **kwargs):
     url = url_template.format(**kwargs)
-    if website_downloader.check_page_exist(url):
+    if website_downloader.check_page_exist(page, url):
         return url
     else:
         return ""
@@ -173,10 +173,26 @@ def multi_thread_download_website(website_downloaders, model_names, min_page=1, 
         thread.start()
 
 
+def get_model_names():
+    ns = []
+    # ns.append("stacy cruz")
+    # ns.append("natasha nice")
+    # ns.append("lucy li")
+    # ns.append("jia lissa")
+    # ns.append("alexis crystal")
+    # ns.append("cabiria")
+    # ns.append("lana rhoades")
+    # ns.append("helga lovekaty")
+    # ns.append("sybil")
+    # ns.append("cindy shine")
+
+    return ns
+
+
 if __name__ == "__main__":
     multi_thread = True
     downloaders = [Sgirlsweb()]
-    names = ["stacy cruz", "natasha nice", "lucy li", "jia lissa"]
+    names = get_model_names()
     if multi_thread:
         multi_thread_download_website(downloaders, names)
     else:

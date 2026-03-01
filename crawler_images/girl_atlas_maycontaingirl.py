@@ -14,7 +14,7 @@ class GirlAtlasMayContainGirl:
             "url_template": "https://girl-atlas.xyz/tag?id=6724c241d4f26ac5c525e0b1&p={page}",
         }
 
-    def check_page_exist(self, page_url):
+    def check_page_exist(self, page, page_url):
         try:
             response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
         except requests.exceptions.Timeout:
@@ -30,7 +30,7 @@ class GirlAtlasMayContainGirl:
         else:
             return False
 
-    def get_models(self, page_url, model_names):
+    def get_models(self, page, page_url, model_names):
         model_list = []
 
         try:

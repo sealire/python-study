@@ -13,7 +13,7 @@ class Deskbabesgirls:
             "url_template": "https://deskbabesgirls.com/?page={page}",
         }
 
-    def check_page_exist(self, page_url):
+    def check_page_exist(self, page, page_url):
         try:
             response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
         except requests.exceptions.Timeout:
@@ -29,7 +29,7 @@ class Deskbabesgirls:
         else:
             return False
 
-    def get_models(self, page_url, model_names):
+    def get_models(self, page, page_url, model_names):
         model_list = []
 
         try:

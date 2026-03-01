@@ -1,8 +1,13 @@
+import glob
+import os
+
 import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
 from crawler_images.common import is_selected_model
+
+local_base_dir = "F:\\GIT\\python-study\\crawler_images\\images\\PenthousePets"
 
 
 class PenthousePets:
@@ -13,58 +18,36 @@ class PenthousePets:
             "url_template": "https://penthouse-pets.net/{page}",
         }
 
-    def check_page_exist(self, page_url):
-        try:
-            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
-            return False
-        soup = BeautifulSoup(response.text, "html.parser")
-        container = soup.find('div', class_='gallery-grid')
-        if not container:
-            return False
-        model_cards = container.find_all("div", class_='gallery-card')
-        if model_cards:
-            return True
-        else:
-            return False
+    def check_page_exist(self, page, page_url):
+        return page <= 26
 
-    def get_models(self, page_url, model_names):
+    def get_models(self, page, page_url, model_names):
         model_list = []
 
-        try:
-            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
-            return False
-        soup = BeautifulSoup(response.text, "html.parser")
+        dir = local_base_dir + "\\page\\" + str(page)
 
-        # print(response.text)
-        container = soup.find('div', class_='gallery-grid')
-        model_cards = container.find_all("div", class_='gallery-card')
-        for i, model_card in enumerate(model_cards):
-            # print(model_card.getText)
-            model_card_a = model_card.find("a", class_="gallery-thumb")
-            model_url = model_card_a.get("href")
-            # model_url = urljoin(page_url, model_url)
-            model_name = model_card_a.find("img").get("alt")
-            if model_names and not is_selected_model(model_name, model_names):
-                continue
-            # print(model_name, '###############', model_url)
-            model_list.append({"name": model_name, "urls": [model_url]})
+        html_files = []
+        pattern = os.path.join(dir, "*.html")
+        html_files.extend(glob.glob(pattern))
+        pattern = os.path.join(dir, "*.htm")
+        html_files.extend(glob.glob(pattern))
+
+        for index, html_file in enumerate(html_files):
+            start = html_file.rfind("\\")
+            end = html_file.rfind(".htm")
+            model_url = html_file.replace(local_base_dir, "")
+            model_list.append({"name": html_file[start + 1:end], "urls": [model_url]})
 
         return model_list
 
     def get_model_image_urls(self, model_url):
         image_urls = []
 
-        try:
-            response = requests.get(model_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Model页面超时, model_url:{model_url}")
-            return image_urls
-        soup = BeautifulSoup(response.text, "html.parser")
-        print(response.text)
+        with open(local_base_dir + model_url, 'r',
+                  encoding='utf-8') as file:
+            html_text = file.read()
+
+        soup = BeautifulSoup(html_text, "html.parser")
 
         container = soup.find('div', class_='space-y-6')
         grids = container.find_all('div', class_='grid')

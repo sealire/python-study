@@ -14,4 +14,9 @@ http_headers_2 = {
         'Sec-Fetch-Site': 'none',
         'Cache-Control': 'max-age=0'
     }
+http_headers_img = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.139 Safari/537.36',
+        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+        'Referer': 'https://static1.mibogirl.com'
+    }
 http_timeout = 30

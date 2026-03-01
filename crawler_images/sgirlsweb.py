@@ -15,7 +15,7 @@ class Sgirlsweb:
             "url_template": "https://www.sgirlsweb.com/all-sexy-girls/{page}/",
         }
 
-    def check_page_exist(self, page_url):
+    def check_page_exist(self, page, page_url):
         try:
             response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
         except requests.exceptions.Timeout:
@@ -31,7 +31,7 @@ class Sgirlsweb:
         else:
             return False
 
-    def get_models(self, page_url, model_names):
+    def get_models(self, page, page_url, model_names):
         model_list = []
 
         try:
@@ -53,6 +53,7 @@ class Sgirlsweb:
             model_name = re.sub(r'[?/\'|]', '', model_name)
             model_name = model_name.strip()
             if model_names and not is_selected_model(model_name, model_names):
+                print(f"Sgirlsweb, {model_name} 未选择，忽略")
                 continue
 
             model_name_split = model_name.replace(' ', "-").lower()
@@ -71,6 +72,7 @@ class Sgirlsweb:
             if max_page <= max_page_index:
                 break
             max_page_index = max_page
+            print(f"Sgirlsweb, {model_name_split}, max_page_index:{max_page_index}")
 
         for page in range(1, max_page_index + 1):  # 遍历页码
             model_url = base_url + str(page) + "/"
@@ -115,10 +117,10 @@ class Sgirlsweb:
             img = image.find("a", class_="athumb").find("img")
             image_url = img.get("src")
             if image_url and image_url.startswith('http'):
-                image_url = image_url.replace("static3", "static1")
-                image_url = image_url.replace("thumbs-photos/480", "")
-                index = image_url.rfind("/") + 1
-                image_url = image_url[:index] + "mibogirl-" + image_url[index:]
+                # image_url = image_url.replace("static3", "static1")
+                image_url = image_url.replace("thumbs-photos/480/", "thumbs-photos/1080/")
+                # index = image_url.rfind("/") + 1
+                # image_url = image_url[:index] + "mibogirl-" + image_url[index:]
                 image_urls.append({
                     "image_url": image_url
                 })
