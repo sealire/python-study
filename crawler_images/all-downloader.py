@@ -6,6 +6,7 @@ import os
 import threading
 
 from crawler_images import constants
+from crawler_images.deskbabesgirls import Deskbabesgirls
 from crawler_images.girl_atlas import GirlAtlas
 from crawler_images.girl_atlas_Japanese import GirlAtlasJapanese
 from crawler_images.girl_atlas_artgravia import GirlAtlasArtGravia
@@ -47,85 +48,128 @@ from crawler_images.girl_atlas_wanibooks import GirlAtlasWanibooks
 from crawler_images.girl_atlas_wpb_net import GirlAtlasWpbNet
 from crawler_images.girl_atlas_xingyan import GirlAtlasXingyan
 from crawler_images.girl_atlas_xiuren import GirlAtlasXiuren
-from crawler_images.girl_atlas_xrwang import GirlAtlasXrwang
 from crawler_images.girl_atlas_ysvw import GirlAtlasYsvw
 from crawler_images.girl_atlas_zishy import GirlAtlasZishy
+from crawler_images.istrippergirls import Istrippergirls
+from crawler_images.penthouse_pets import PenthousePets
+from crawler_images.virtuagirlgirls import Virtuagirlgirls
 
 
 # 线程1
 def download_thread1():
-    download(GirlAtlasChinese(), 1)
-    download(GirlAtlasJvid(), 1)
-    download(GirlAtlasWanibooks(), 1)
-    download(GirlAtlasLeehee(), 1)
+    try:
+        download(GirlAtlasUgirls(), 1)
+        download(GirlAtlasChinese(), 1)
+        download(GirlAtlasJvid(), 1)
+        download(GirlAtlasWanibooks(), 1)
+        download(GirlAtlasLeehee(), 1)
+    except Exception as e:
+        print(f"下载线程退出, thread:1, exception:{e}")
 
 
 # 线程2
 def download_thread2():
-    download(GirlAtlasXiuren(), 2)
-    download(GirlAtlasJapanese(), 2)
-    download(GirlAtlasYsvw(), 2)
-    download(GirlAtlasArtGravia(), 2)
-    download(GirlAtlasUgirls(), 2)
-    download(GirlAtlasGraphis(), 2)
-    download(GirlAtlasBomb(), 2)
+    try:
+        download(GirlAtlasXiuren(), 2)
+        download(GirlAtlasJapanese(), 2)
+        download(GirlAtlasYsvw(), 2)
+        download(GirlAtlasArtGravia(), 2)
+        download(GirlAtlasGraphis(), 2)
+        download(GirlAtlasBomb(), 2)
+    except Exception as e:
+        print(f"下载线程退出, thread:2, exception:{e}")
 
 
 # 线程3
 def download_thread3():
-    download(GirlAtlasXingyan(), 3)
-    download(GirlAtlas(), 3)
-    download(GirlAtlasSabra(), 3)
-    download(GirlAtlasBimilstory(), 3)
-    download(GirlAtlasLigui(), 3)
-    download(GirlAtlasWpbNet(), 3)
-    download(GirlAtlasKorean(), 3)
+    try:
+        download(GirlAtlasXingyan(), 3)
+        download(GirlAtlas(), 3)
+        download(GirlAtlasSabra(), 3)
+        download(GirlAtlasBimilstory(), 3)
+        download(GirlAtlasLigui(), 3)
+        download(GirlAtlasWpbNet(), 3)
+        download(GirlAtlasKorean(), 3)
+    except Exception as e:
+        print(f"下载线程退出, thread:3, exception:{e}")
 
 
 # 线程4
 def download_thread4():
-    download(GirlAtlasMetArt(), 4)
-    download(GirlAtlasStunning18(), 4)
-    download(GirlAtlasDeNudeArt(), 4)
-    download(GirlAtlasPhotoDromm(), 4)
-    download(GirlAtlasMPLStudios(), 4)
-    download(GirlAtlasFameGirls(), 4)
-    download(GirlAtlasNudeInRussia(), 4)
-    download(GirlAtlasTeenDreams(), 4)
+    try:
+        download(GirlAtlasMetArt(), 4)
+        download(GirlAtlasStunning18(), 4)
+        download(GirlAtlasDeNudeArt(), 4)
+        download(GirlAtlasPhotoDromm(), 4)
+        download(GirlAtlasMPLStudios(), 4)
+        download(GirlAtlasFameGirls(), 4)
+        download(GirlAtlasNudeInRussia(), 4)
+        download(GirlAtlasTeenDreams(), 4)
+    except Exception as e:
+        print(f"下载线程退出, thread:4, exception:{e}")
 
 
 # 线程5
 def download_thread5():
-    download(GirlAtlasMetArtX(), 5)
-    download(GirlAtlasFemjoy(), 5)
-    download(GirlAtlasZishy(), 5)
-    download(GirlAtlasPerfect18(), 5)
-    download(GirlAtlasRylskyArt(), 5)
-    download(GirlAtlasMayContainGirl(), 5)
-    download(GirlAtlasShowyBeauty(), 5)
-    download(GirlAtlasEternalDesire(), 5)
+    try:
+        download(GirlAtlasMetArtX(), 5)
+        download(GirlAtlasFemjoy(), 5)
+        download(GirlAtlasZishy(), 5)
+        download(GirlAtlasPerfect18(), 5)
+        download(GirlAtlasRylskyArt(), 5)
+        download(GirlAtlasMayContainGirl(), 5)
+        download(GirlAtlasShowyBeauty(), 5)
+        download(GirlAtlasEternalDesire(), 5)
+    except Exception as e:
+        print(f"下载线程退出, thread:5, exception:{e}")
 
 
 # 线程6
 def download_thread6():
-    download(GirlAtlasStrapLez(), 6)
-    download(GirlAtlasSexArt(), 6)
-    download(GirlAtlasPbplus(), 6)
-    download(GirlAtlasW4b(), 6)
-    download(GirlAtlasHegreArt(), 6)
-    download(GirlAtlasEroticBeauty(), 6)
+    try:
+        download(GirlAtlasStrapLez(), 6)
+        download(GirlAtlasSexArt(), 6)
+        download(GirlAtlasPbplus(), 6)
+        download(GirlAtlasW4b(), 6)
+        download(GirlAtlasHegreArt(), 6)
+        download(GirlAtlasEroticBeauty(), 6)
+    except Exception as e:
+        print(f"下载线程退出, thread:6, exception:{e}")
 
 
 # 线程7
 def download_thread7():
-    download(GirlAtlasPatreon(), 7)
-    download(GirlAtlasFantia(), 7)
-    download(GirlAtlasCosplay(), 7)
+    try:
+        download(GirlAtlasPatreon(), 7)
+        download(GirlAtlasFantia(), 7)
+        download(GirlAtlasCosplay(), 7)
+    except Exception as e:
+        print(f"下载线程退出, thread:7, exception:{e}")
+
 
 # 线程8
 def download_thread8():
-    download(GirlAtlasXrwang(), 8)
+    try:
+        download(Istrippergirls(), 8)
+        download(PenthousePets(), 8)
+    except Exception as e:
+        print(f"下载线程退出, thread:8, exception:{e}")
 
+
+# 线程9
+def download_thread9():
+    try:
+        download(Virtuagirlgirls(), 9)
+    except Exception as e:
+        print(f"下载线程退出, thread:9, exception:{e}")
+
+
+# 线程10
+def download_thread10():
+    try:
+        download(Deskbabesgirls(), 10)
+    except Exception as e:
+        print(f"下载线程退出, thread:9, exception:{e}")
 
 
 def create_website_info(website_title):
@@ -146,8 +190,12 @@ def download_image(website_downloader, website_info, thread_id):
             if not page_url:
                 continue
 
-            time.sleep(10)  # 每个页码，等待10秒
-            download_page_image(website_downloader, website_info, page, page_url, thread_id)
+            all_model_downloaded = download_page_image(website_downloader, website_info, page, page_url, thread_id)
+            if not all_model_downloaded:
+                for second in range(1, 6):  # 每个页码，等待5秒
+                    print(
+                        f"Page遍历等待, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, {second}秒")
+                    time.sleep(1)
         except Exception as e:
             print(
                 f"EXCEPT-Page遍历下载异常, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, url_template:{website_info["url_template"]}, exception:{e}")
@@ -157,22 +205,29 @@ def download_page_image(website_downloader, website_info, page, page_url, thread
     models = website_downloader.get_models(page_url)  # 获取当前页的所有model, {"name": "name", "url": "url"}
     model_count = len(models)
     if model_count < 1:
-        return
+        return True
+
+    all_model_downloaded = True
     for model_index in range(model_count):  # 遍历当前页面的所有model
         try:
             model = models[model_index]
             model_downloaded = if_model_downloaded(website_info["title"], model["url"])
             if model_downloaded:
                 print(
-                    f"Model已下载, thread:{thread_id}, website_title:{website_info["title"]}, model_name:{model["name"]}, model_url:{model["url"]}")
+                    f"Model已下载, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model_index:{model_index} model_name:{model["name"]}, model_url:{model["url"]}")
                 continue
 
-            time.sleep(10)  # 每个model页面，等待10秒
+            all_model_downloaded = False
+            for second in range(1, 11):  # 每个页码，等待10秒
+                print(
+                    f"Model遍历等待, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model_index:{model_index}, {second}秒")
+                time.sleep(1)
             download_model_images(website_info["title"], website_downloader, page, model_index, model_count, model,
                                   thread_id)
         except Exception as e:
             print(
                 f"EXCEPT-Model遍历下载异常, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model_index:{model_index}, model_url:{models[model_index]["url"]}, exception:{e}")
+    return all_model_downloaded
 
 
 def download_model_images(website_title, website_downloader, page, model_index, model_count, model, thread_id):
@@ -265,40 +320,45 @@ def download(website_downloader, thread_id):
 
 
 def multi_thread_download():
-    thread1 = threading.Thread(target=download_thread1)
-    thread1.start()
+    # thread1 = threading.Thread(target=download_thread1)
+    # thread1.start()
+    #
+    # thread2 = threading.Thread(target=download_thread2)
+    # thread2.start()
+    #
+    # thread3 = threading.Thread(target=download_thread3)
+    # thread3.start()
 
-    thread2 = threading.Thread(target=download_thread2)
-    thread2.start()
+    # thread4 = threading.Thread(target=download_thread4)
+    # thread4.start()
+    #
+    # thread5 = threading.Thread(target=download_thread5)
+    # thread5.start()
+    #
+    # thread6 = threading.Thread(target=download_thread6)
+    # thread6.start()
 
-    thread3 = threading.Thread(target=download_thread3)
-    thread3.start()
+    # thread7 = threading.Thread(target=download_thread7)
+    # thread7.start()
 
-    thread4 = threading.Thread(target=download_thread4)
-    thread4.start()
+    thread8 = threading.Thread(target=download_thread8)
+    thread8.start()
 
-    thread5 = threading.Thread(target=download_thread5)
-    thread5.start()
+    thread9 = threading.Thread(target=download_thread9)
+    thread9.start()
 
-    thread6 = threading.Thread(target=download_thread6)
-    thread6.start()
-
-    thread7 = threading.Thread(target=download_thread7)
-    thread7.start()
-
-    # thread8 = threading.Thread(target=download_thread8)
-    # thread8.start()
+    # thread10 = threading.Thread(target=download_thread10)
+    # thread10.start()
 
 
 def single_thread_download():
     download_thread1()  # 东方
     download_thread2()  # 东方
     download_thread3()  # 东方
-    download_thread4()  # 西方
-    download_thread5()  # 西方
-    download_thread6()  # 西方
-    download_thread7()  # Cosplay
-    # download_thread8()  # 秀人网
+    # download_thread4()  # 西方
+    # download_thread5()  # 西方
+    # download_thread6()  # 西方
+    # download_thread7()  # Cosplay
 
 
 if __name__ == "__main__":
