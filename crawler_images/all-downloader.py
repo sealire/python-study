@@ -6,6 +6,7 @@ import threading
 
 from crawler_images import constants
 from crawler_images.common import is_selected_model
+from crawler_images.deskbabesgirls import Deskbabesgirls
 from crawler_images.istrippergirls import Istrippergirls
 from crawler_images.penthouse_pets import PenthousePets
 from crawler_images.sgirlsweb import Sgirlsweb
@@ -28,7 +29,7 @@ def download_image(website_downloader, website_info, thread_id, model_names, min
             f"Page遍历下载, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}")
 
         try:
-            page_url = get_page_url(website_downloader, website_info["url_template"], page,
+            page_url = get_page_url(website_downloader, website_info["url_template"], thread_id, page,
                                     page=page)  # 获取当前页码的URL地址，如果没有该页码就返回空
             if not page_url:
                 continue
@@ -107,10 +108,10 @@ def save_model_images(website_title, page, model_index, model_count, model, mode
         save_model_url_to_file(website_title, model, model_url)
 
 
-def get_page_url(website_downloader, url_template, page_index, **kwargs):
-    url = url_template.format(**kwargs)
-    if website_downloader.check_page_exist(page_index, url):
-        return url
+def get_page_url(website_downloader, url_template, thread_id, page_index, **kwargs):
+    page_url = url_template.format(**kwargs)
+    if website_downloader.check_page_exist(thread_id, page_index, page_url):
+        return page_url
     else:
         return ""
 
@@ -182,7 +183,7 @@ def get_model_names():
     ns = []
     # ns.append("stacy cruz")
     # ns.append("natasha nice")
-    ns.append("lucy li")
+    # ns.append("lucy li")
     # ns.append("jia lissa")
     # ns.append("alexis crystal")
     # ns.append("cabiria")
@@ -198,6 +199,8 @@ def get_model_downloaders():
     ds = []
 
     ds.append(Istrippergirls())
+    ds.append(Virtuagirlgirls())
+    ds.append(PenthousePets())
 
     return ds
 

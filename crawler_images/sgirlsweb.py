@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
-from crawler_images.common import is_selected_model
+from crawler_images.common import is_selected_model, get_page_html
 
 
 class Sgirlsweb:
@@ -15,14 +15,9 @@ class Sgirlsweb:
             "url_template": "https://www.sgirlsweb.com/all-sexy-girls/{page}/",
         }
 
-    def check_page_exist(self, page, page_url):
-        try:
-            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
-            return False
-        soup = BeautifulSoup(response.text, "html.parser")
-        container = soup.find('ul', id='iids')
+    def check_page_exist(self, thread_id, page, page_url):
+        html_text = get_page_html(thread_id, page, page_url)
+        container = html_text.find('ul', id='iids')
         if not container:
             return False
         model_cards = container.find_all("li", class_='item')
@@ -33,16 +28,8 @@ class Sgirlsweb:
 
     def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
-
-        try:
-            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
-            return False
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        # print(response.text)
-        container = soup.find('ul', id='iids')
+        html_text = get_page_html(thread_id, page, page_url)
+        container = html_text.find('ul', id='iids')
         model_cards = container.find_all("li", class_='item')
         model_count = len(model_cards)
         for index, model_card in enumerate(model_cards):
@@ -51,7 +38,7 @@ class Sgirlsweb:
             # model_url = urljoin(page_url, model_url)
             model_h2 = model_card.find("div", class_="item-pdat-text").find("h2")
             model_name = model_h2.get_text(strip=True)
-            model_name = re.sub(r'[?/\'|]', '', model_name)
+            model_name = re.sub(r'[?/\'|.]', '', model_name)
             model_name = model_name.strip()
             if model_names and not is_selected_model(model_name, model_names):
                 print(
@@ -90,8 +77,8 @@ class Sgirlsweb:
         except requests.exceptions.Timeout:
             print(f"EXCEPT-获取Model页面超时, page_url:{model_url}")
             return page_index
-        soup = BeautifulSoup(response.text, "html.parser")
-        container = soup.find('div', class_='pages')
+        html_text = BeautifulSoup(response.text, "html.parser")
+        container = html_text.find('div', class_='pages')
         if not container:
             return page_index
         lis = container.find_all("li")
@@ -111,10 +98,10 @@ class Sgirlsweb:
         except requests.exceptions.Timeout:
             print(f"EXCEPT-获取Model页面超时, model_url:{model_url}")
             return image_urls
-        soup = BeautifulSoup(response.text, "html.parser")
+        html_text = BeautifulSoup(response.text, "html.parser")
         # print(response.text)
 
-        container = soup.find('ul', id='iids')
+        container = html_text.find('ul', id='iids')
         image_tags = container.find_all("li", class_='fl-photo-item')
         for i, image in enumerate(image_tags):
             img = image.find("a", class_="athumb").find("img")

@@ -19,14 +19,12 @@ class PenthousePets:
             "url_template": "https://penthouse-pets.net/{page}",
         }
 
-    def check_page_exist(self, page, page_url):
+    def check_page_exist(self, thread_id, page, page_url):
         return page <= 26
 
     def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
-
         dir = local_base_dir + "\\page\\" + str(page)
-
         html_files = []
         pattern = os.path.join(dir, "*.html")
         html_files.extend(glob.glob(pattern))
@@ -39,7 +37,11 @@ class PenthousePets:
             model_url = html_file.replace(local_base_dir, "")
 
             model_name = html_file[start + 1:end]
+            model_name = model_name.replace('- Penthouse Galleries', "")
             model_name = re.sub(r'[?/\'|.]', '', model_name)
+            if len(model_name) > 100:
+                model_name = model_name[:100]
+            model_name = model_name.strip()
             model_list.append({"name": model_name, "urls": [model_url]})
 
         return model_list
@@ -51,9 +53,9 @@ class PenthousePets:
                   encoding='utf-8') as file:
             html_text = file.read()
 
-        soup = BeautifulSoup(html_text, "html.parser")
+        html_text = BeautifulSoup(html_text, "html.parser")
 
-        container = soup.find('div', class_='space-y-6')
+        container = html_text.find('div', class_='space-y-6')
         grids = container.find_all('div', class_='grid')
         for index, grid in enumerate(grids):
             image_tags = grid.find_all("a")

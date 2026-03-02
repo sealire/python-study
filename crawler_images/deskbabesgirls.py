@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
-from crawler_images.common import is_selected_model
+from crawler_images.common import is_selected_model, get_page_html
 
 
 class Deskbabesgirls:
@@ -13,14 +13,9 @@ class Deskbabesgirls:
             "url_template": "https://deskbabesgirls.com/?page={page}",
         }
 
-    def check_page_exist(self, page, page_url):
-        try:
-            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
-            return False
-        soup = BeautifulSoup(response.text, "html.parser")
-        container = soup.find('div', class_='grid-cols-2')
+    def check_page_exist(self, thread_id, page, page_url):
+        html_text = get_page_html(thread_id, page, page_url)
+        container = html_text.find('div', class_='grid-cols-2')
         if not container:
             return False
         model_cards = container.find_all("a", class_='gallery-card')
@@ -31,16 +26,8 @@ class Deskbabesgirls:
 
     def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
-
-        try:
-            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
-            return False
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        # print(response.text)
-        container = soup.find('div', class_='grid-cols-2')
+        html_text = get_page_html(thread_id, page, page_url)
+        container = html_text.find('div', class_='grid-cols-2')
         model_cards = container.find_all("a", class_='gallery-card')
         model_count = len(model_cards)
         for index, model_card in enumerate(model_cards):
@@ -65,10 +52,10 @@ class Deskbabesgirls:
         except requests.exceptions.Timeout:
             print(f"EXCEPT-获取Model页面超时, model_url:{model_url}")
             return image_urls
-        soup = BeautifulSoup(response.text, "html.parser")
+        html_text = BeautifulSoup(response.text, "html.parser")
         # print(response.text)
 
-        container = soup.find('div', class_='content-section')
+        container = html_text.find('div', class_='content-section')
         image_tags = container.find_all("a", class_='photo-thumb')
         for i, image in enumerate(image_tags):
             image_url = image.get("href")

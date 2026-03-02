@@ -111,7 +111,7 @@ async def fetch_http3_content(url):
 
 
 if __name__ == "__main__":
-    test_url("https://deskbabesgirls.com/galleries/0708_lucy_li.html")
+    test_url("https://deskbabesgirls.com/galleries/0724_lucy_li.html")
     # test_url("https://penthouse-pets.net/2")
 
     # asyncio.run(get("https://penthouse-galleries.net/galleries/0028.html"))

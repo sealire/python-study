@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 from crawler_images import constants
-from crawler_images.common import is_selected_model
+from crawler_images.common import is_selected_model, get_page_html
 
 
 class GirlAtlasSexArt:
@@ -14,14 +14,9 @@ class GirlAtlasSexArt:
             "url_template": "https://girl-atlas.xyz/tag?id=67247c4b0d23b488f7162de5&p={page}",
         }
 
-    def check_page_exist(self, page, page_url):
-        try:
-            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
-            return False
-        soup = BeautifulSoup(response.text, "html.parser")
-        container = soup.find('div', id='div-tag')
+    def check_page_exist(self, thread_id, page, page_url):
+        html_text = get_page_html(thread_id, page, page_url)
+        container = html_text.find('div', id='div-tag')
         if not container:
             return False
         model_cards = container.find_all("div", class_='card-body')
@@ -32,16 +27,8 @@ class GirlAtlasSexArt:
 
     def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
-
-        try:
-            response = requests.get(page_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Page页面超时, page_url:{page_url}")
-            return False
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        # print(response.text)
-        container = soup.find('div', id='div-tag')
+        html_text = get_page_html(thread_id, page, page_url)
+        container = html_text.find('div', id='div-tag')
         model_cards = container.find_all("div", class_='card-body')
         model_count = len(model_cards)
         for index, model_card in enumerate(model_cards):
@@ -67,10 +54,10 @@ class GirlAtlasSexArt:
         except requests.exceptions.Timeout:
             print(f"EXCEPT-获取Model页面超时, model_url:{model_url}")
             return image_urls
-        soup = BeautifulSoup(response.text, "html.parser")
+        html_text = BeautifulSoup(response.text, "html.parser")
         # print(response.text)
 
-        container = soup.find('div', class_='gallery')
+        container = html_text.find('div', class_='gallery')
         image_tags = container.find_all("a")
 
         for i, image in enumerate(image_tags):
