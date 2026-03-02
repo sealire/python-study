@@ -16,6 +16,8 @@ class GirlAtlas:
 
     def check_page_exist(self, thread_id, page, page_url):
         html_text = get_page_html(thread_id, page, page_url)
+        if not html_text:
+            return False
         container = html_text.find('div', id='div-index')
         if not container:
             return False
@@ -28,6 +30,8 @@ class GirlAtlas:
     def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
         html_text = get_page_html(thread_id, page, page_url)
+        if not html_text:
+            return model_list
         container = html_text.find('div', id='div-index')
         model_cards = container.find_all("div", class_='card-body')
         model_count = len(model_cards)

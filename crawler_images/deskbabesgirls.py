@@ -15,6 +15,8 @@ class Deskbabesgirls:
 
     def check_page_exist(self, thread_id, page, page_url):
         html_text = get_page_html(thread_id, page, page_url)
+        if not html_text:
+            return False
         container = html_text.find('div', class_='grid-cols-2')
         if not container:
             return False
@@ -27,6 +29,8 @@ class Deskbabesgirls:
     def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
         html_text = get_page_html(thread_id, page, page_url)
+        if not html_text:
+            return model_list
         container = html_text.find('div', class_='grid-cols-2')
         model_cards = container.find_all("a", class_='gallery-card')
         model_count = len(model_cards)

@@ -16,6 +16,8 @@ class GirlAtlasBimilstory:
 
     def check_page_exist(self, thread_id, page, page_url):
         html_text = get_page_html(thread_id, page, page_url)
+        if not html_text:
+            return False
         container = html_text.find('div', id='div-tag')
         if not container:
             return False

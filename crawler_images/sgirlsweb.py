@@ -17,6 +17,8 @@ class Sgirlsweb:
 
     def check_page_exist(self, thread_id, page, page_url):
         html_text = get_page_html(thread_id, page, page_url)
+        if not html_text:
+            return False
         container = html_text.find('ul', id='iids')
         if not container:
             return False
@@ -29,6 +31,8 @@ class Sgirlsweb:
     def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
         html_text = get_page_html(thread_id, page, page_url)
+        if not html_text:
+            return model_list
         container = html_text.find('ul', id='iids')
         model_cards = container.find_all("li", class_='item')
         model_count = len(model_cards)
