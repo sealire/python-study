@@ -31,7 +31,7 @@ class Virtuagirlgirls:
         else:
             return False
 
-    def get_models(self, page, page_url, model_names):
+    def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
 
         try:
@@ -44,7 +44,8 @@ class Virtuagirlgirls:
         # print(response.text)
         container = soup.find('div', class_='grid-cols-2')
         model_cards = container.find_all("a", class_='gallery-card')
-        for i, model_card in enumerate(model_cards):
+        model_count = len(model_cards)
+        for index, model_card in enumerate(model_cards):
             # print(model_card.getText)
             # model_card_a = model_card.find("a", class_="gallery-thumb")
             model_url = model_card.get("href")
@@ -53,6 +54,8 @@ class Virtuagirlgirls:
             model_name = re.sub(r'[?/\'|]', '', model_name)
             model_name = model_name.strip()
             if model_names and not is_selected_model(model_name, model_names):
+                print(
+                    f"忽略该model, thread_id:{thread_id}, page:{page}, model:{index + 1}/{model_count},  model_name:{model_name}")
                 continue
             # model_name = model_name.replace('/', "")
             # model_name = model_name.replace('|', "")

@@ -1,5 +1,6 @@
 import glob
 import os
+import re
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,7 +22,7 @@ class PenthousePets:
     def check_page_exist(self, page, page_url):
         return page <= 26
 
-    def get_models(self, page, page_url, model_names):
+    def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
 
         dir = local_base_dir + "\\page\\" + str(page)
@@ -36,7 +37,10 @@ class PenthousePets:
             start = html_file.rfind("\\")
             end = html_file.rfind(".htm")
             model_url = html_file.replace(local_base_dir, "")
-            model_list.append({"name": html_file[start + 1:end], "urls": [model_url]})
+
+            model_name = html_file[start + 1:end]
+            model_name = re.sub(r'[?/\'|.]', '', model_name)
+            model_list.append({"name": model_name, "urls": [model_url]})
 
         return model_list
 

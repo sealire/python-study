@@ -30,7 +30,7 @@ class GirlAtlasLigui:
         else:
             return False
 
-    def get_models(self, page, page_url, model_names):
+    def get_models(self, thread_id, page, page_url, model_names):
         model_list = []
 
         try:
@@ -43,13 +43,16 @@ class GirlAtlasLigui:
         # print(response.text)
         container = soup.find('div', id='div-tag')
         model_cards = container.find_all("div", class_='card-body')
-        for i, model_card in enumerate(model_cards):
+        model_count = len(model_cards)
+        for index, model_card in enumerate(model_cards):
             # print(model_card.getText)
             model_card_h4 = model_card.find("h4").find("a")
             model_url = model_card_h4.get("href")
             model_url = urljoin(page_url, model_url)
             model_name = model_card_h4.string
             if model_names and not is_selected_model(model_name, model_names):
+                print(
+                    f"忽略该model, thread_id:{thread_id}, page:{page}, model:{index + 1}/{model_count},  model_name:{model_name}")
                 continue
             # print(model_name, '###############', model_url)
             model_list.append({"name": model_name, "urls": [model_url]})
