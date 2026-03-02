@@ -46,15 +46,12 @@ class PenthousePets:
 
         return model_list
 
-    def get_model_image_urls(self, model_url):
+    def get_model_image_urls(self, thread_id, page, model_index, model_url_index, model_url):
         image_urls = []
-
         with open(local_base_dir + model_url, 'r',
                   encoding='utf-8') as file:
             html_text = file.read()
-
         html_text = BeautifulSoup(html_text, "html.parser")
-
         container = html_text.find('div', class_='space-y-6')
         grids = container.find_all('div', class_='grid')
         for index, grid in enumerate(grids):

@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
-from crawler_images.common import is_selected_model, get_page_html
+from crawler_images.common import is_selected_model, get_page_html, get_model_image_html
 
 
 class Sgirlsweb:
@@ -51,18 +51,18 @@ class Sgirlsweb:
                 continue
 
             model_name_split = model_name.replace(' ', "-").lower()
-            model_urls = self.get_model_urls(model_name_split)
+            model_urls = self.get_model_urls(thread_id, index, model_name_split)
             # print(model_name, '###############', model_url)
             model_list.append({"name": model_name, "urls": model_urls})
 
         return model_list
 
-    def get_model_urls(self, model_name_split):
+    def get_model_urls(self, thread_id, model_index, model_name_split):
         model_urls = []
         max_page_index = 1
         base_url = "https://www.sgirlsweb.com/girl/" + model_name_split + "/photo-gallery/"
         while True:
-            max_page = self.get_max_model_image_page(base_url, max_page_index)
+            max_page = self.get_max_model_image_page(thread_id, model_index, base_url, max_page_index)
             if max_page <= max_page_index:
                 break
             max_page_index = max_page
@@ -74,14 +74,9 @@ class Sgirlsweb:
 
         return model_urls
 
-    def get_max_model_image_page(self, base_url, page_index):
+    def get_max_model_image_page(self, thread_id, model_index, base_url, page_index):
         model_url = base_url + str(page_index) + "/"
-        try:
-            response = requests.get(model_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Model页面超时, page_url:{model_url}")
-            return page_index
-        html_text = BeautifulSoup(response.text, "html.parser")
+        html_text = get_model_image_html(thread_id, page_index, model_index, page_index, model_url)
         container = html_text.find('div', class_='pages')
         if not container:
             return page_index
@@ -94,17 +89,11 @@ class Sgirlsweb:
         else:
             return page_index
 
-    def get_model_image_urls(self, model_url):
+    def get_model_image_urls(self, thread_id, page, model_index, model_url_index, model_url):
         image_urls = []
-
-        try:
-            response = requests.get(model_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Model页面超时, model_url:{model_url}")
+        html_text = get_model_image_html(thread_id, page, model_index, model_url_index, model_url)
+        if not html_text:
             return image_urls
-        html_text = BeautifulSoup(response.text, "html.parser")
-        # print(response.text)
-
         container = html_text.find('ul', id='iids')
         image_tags = container.find_all("li", class_='fl-photo-item')
         for i, image in enumerate(image_tags):

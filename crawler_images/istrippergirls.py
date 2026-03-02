@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
-from crawler_images.common import is_selected_model, get_page_html
+from crawler_images.common import is_selected_model, get_page_html, get_model_image_html
 
 
 class Istrippergirls:
@@ -55,17 +55,11 @@ class Istrippergirls:
 
         return model_list
 
-    def get_model_image_urls(self, model_url):
+    def get_model_image_urls(self, thread_id, page, model_index, model_url_index, model_url):
         image_urls = []
-
-        try:
-            response = requests.get(model_url, timeout=constants.http_timeout, headers=constants.http_headers)
-        except requests.exceptions.Timeout:
-            print(f"EXCEPT-获取Model页面超时, model_url:{model_url}")
+        html_text = get_model_image_html(thread_id, page, model_index, model_url_index, model_url)
+        if not html_text:
             return image_urls
-        html_text = BeautifulSoup(response.text, "html.parser")
-        # print(response.text)
-
         container = html_text.find('div', class_='content-section')
         image_tags = container.find_all("a", class_='photo-thumb')
         for i, image in enumerate(image_tags):

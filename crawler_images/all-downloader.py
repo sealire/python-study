@@ -71,7 +71,8 @@ def download_page_image(website_downloader, website_info, page, page_url, thread
 
 def download_model_images(website_title, website_downloader, page, model_index, model_count, model, model_url_index,
                           model_url, thread_id):
-    image_urls = website_downloader.get_model_image_urls(model_url)  # 获取当前model的所有图片地址, {"image_url": "image_url"}
+    image_urls = website_downloader.get_model_image_urls(thread_id, page, model_index, model_url_index,
+                                                         model_url)  # 获取当前model的所有图片地址, {"image_url": "image_url"}
     if not image_urls:
         return
 
