@@ -2,11 +2,7 @@ import glob
 import os
 import re
 
-import requests
 from bs4 import BeautifulSoup
-
-from crawler_images import constants
-from crawler_images.common import is_selected_model
 
 local_base_dir = "F:\\GIT\\python-study\\crawler_images\\images\\PenthousePets"
 

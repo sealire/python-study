@@ -1,8 +1,4 @@
-import requests
-from bs4 import BeautifulSoup
-
-from crawler_images import constants
-from crawler_images.common import is_selected_model, get_page_html, get_model_image_html, get_model_image_html
+from crawler_images.common import get_page_html, get_model_image_html
 
 
 class Deskbabesgirls:
