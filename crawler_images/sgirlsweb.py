@@ -11,8 +11,8 @@ class Sgirlsweb:
             "url_template": "https://www.sgirlsweb.com/all-sexy-girls/{page}/",
         }
 
-    def check_page_exist(self, thread_id, page, page_url):
-        html_text = get_page_html(thread_id, page, page_url)
+    def check_page_exist(self, download_info):
+        html_text = get_page_html(download_info)
         if not html_text:
             return False
         container = html_text.find('ul', id='iids')
@@ -24,41 +24,31 @@ class Sgirlsweb:
         else:
             return False
 
-    def get_models(self, thread_id, page, page_url, model_names):
+    def get_models_in_page(self, download_info):
         model_list = []
-        html_text = get_page_html(thread_id, page, page_url)
+        html_text = get_page_html(download_info)
         if not html_text:
             return model_list
         container = html_text.find('ul', id='iids')
         model_cards = container.find_all("li", class_='item')
-        model_count = len(model_cards)
-        for index, model_card in enumerate(model_cards):
-            # print(model_card.getText)
-            # model_card_a = model_card.find("a", class_="gallery-thumb")
-            # model_url = urljoin(page_url, model_url)
+        for model_index, model_card in enumerate(model_cards):
             model_h2 = model_card.find("div", class_="item-pdat-text").find("h2")
             model_name = model_h2.get_text(strip=True)
             model_name = re.sub(r'[?/\'|.]', '', model_name)
             model_name = model_name.strip()
-            if model_names and not is_selected_model(model_name, model_names):
-                print(
-                    f"忽略该model, thread_id:{thread_id}, page:{page}, model:{index + 1}/{model_count},  model_name:{model_name}")
-                print(f"Sgirlsweb, {model_name} 未选择，忽略")
-                continue
-
-            model_name_split = model_name.replace(' ', "-").lower()
-            model_urls = self.get_model_urls(thread_id, index, model_name_split)
-            # print(model_name, '###############', model_url)
-            model_list.append({"name": model_name, "urls": model_urls})
+            if is_selected_model(model_name, download_info):
+                model_name_split = model_name.replace(' ', "-").lower()
+                model_urls = self.get_model_urls(download_info, model_index, model_name_split)
+                model_list.append({"name": model_name, "urls": model_urls})
 
         return model_list
 
-    def get_model_urls(self, thread_id, model_index, model_name_split):
+    def get_model_urls(self, download_info, model_index, model_name_split):
         model_urls = []
         max_page_index = 1
         base_url = "https://www.sgirlsweb.com/girl/" + model_name_split + "/photo-gallery/"
         while True:
-            max_page = self.get_max_model_image_page(thread_id, model_index, base_url, max_page_index)
+            max_page = self.get_max_model_image_page(download_info["thread_id"], model_index, base_url, max_page_index)
             if max_page <= max_page_index:
                 break
             max_page_index = max_page
@@ -85,9 +75,9 @@ class Sgirlsweb:
         else:
             return page_index
 
-    def get_model_image_urls(self, thread_id, page, model_index, model_url_index, model_url):
+    def get_model_image_urls(self, download_info):
         image_urls = []
-        html_text = get_model_image_html(thread_id, page, model_index, model_url_index, model_url)
+        html_text = get_model_image_html(download_info)
         if not html_text:
             return image_urls
         container = html_text.find('ul', id='iids')
@@ -101,7 +91,7 @@ class Sgirlsweb:
                 # index = image_url.rfind("/") + 1
                 # image_url = image_url[:index] + "mibogirl-" + image_url[index:]
                 image_urls.append({
-                    "image_url": image_url
+                    "image_url": image_url.strip()
                 })
 
         return image_urls

@@ -23,95 +23,147 @@ def create_website_info(website_title):
             file.write("0")
 
 
-def download_image(website_downloader, website_info, thread_id, model_names, min_page, max_page):
-    for page in range(min_page, max_page):  # 遍历页码
-        print(
-            f"Page遍历下载, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}")
+def download_website_image(download_info):
+    for page_index in range(download_info["min_page"], download_info["max_page"]):  # 遍历页码
+        current_download_info = {
+            "page_index": page_index
+        }
+        download_info["current_download_info"] = current_download_info
 
         try:
-            page_url = get_page_url(website_downloader, website_info["url_template"], thread_id, page,
-                                    page=page)  # 获取当前页码的URL地址，如果没有该页码就返回空
-            if not page_url:
-                continue
-
-            download_page_image(website_downloader, website_info, page, page_url, thread_id, model_names)
+            download_page_image(download_info)
         except Exception as e:
             print(
-                f"EXCEPT-Page遍历下载异常, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, url_template:{website_info["url_template"]}, exception:{e}")
+                f"EXCEPT-Page下载异常, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, page:{page_index}, exception:{e}")
 
 
-def download_page_image(website_downloader, website_info, page, page_url, thread_id, model_names):
-    models = website_downloader.get_models(thread_id, page, page_url,
-                                           model_names)  # 获取当前页的所有model, {"name": "name", "url": "url"}
+def download_page_image(download_info):
+    page_index = download_info["current_download_info"]["page_index"]
+    print(
+        f"遍历Page, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, page:{page_index}")
+
+    page_url = get_page_url(download_info, page=page_index)  # 获取当前页码的URL地址，如果没有该页码就返回空
+    if not page_url:
+        return
+
+    models = download_info["website_downloader"].get_models_in_page(download_info)  # 获取当前页的所有model
     model_count = len(models)
     if model_count < 1:
         return
 
+    current_download_info = download_info["current_download_info"]
+    current_download_info["model_count_in_page"] = model_count
+
     for model_index in range(model_count):  # 遍历当前页面的所有model
-        model = models[model_index]
-        model_urls = model["urls"]
-        for model_url_index, model_url in enumerate(model_urls):
-            try:
-                model_downloaded = if_model_downloaded(website_info["title"], model_url)
-                if model_downloaded:
-                    print(
-                        f"Model已下载, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index + 1}, model_url:{model_url}")
-                    continue
+        current_download_info["model_index_in_page"] = model_index + 1
+        current_download_info["model_info"] = models[model_index]
 
-                for second in range(1, 11):  # 每个页码，等待10秒
-                    print(
-                        f"Model遍历等待, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index + 1}, model_url:{model_url}, {second}秒")
-                    time.sleep(1)
-                download_model_images(website_info["title"], website_downloader, page, model_index, model_count, model,
-                                      model_url_index, model_url, thread_id)
-            except Exception as e:
-                print(
-                    f"EXCEPT-Model遍历下载异常, thread:{thread_id}, website_title:{website_info["title"]}, page:{page}, model:{model_index + 1}/{model_count}, model_url:{model_url}, exception:{e}")
+        try:
+            download_model_image(download_info)
+        except Exception as e:
+            print(
+                f"EXCEPT-Model下载异常, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, page:{current_download_info["page_index"]}({model_index + 1}/{model_count}), model_name:{current_download_info["model_info"]["name"]}, exception:{e}")
 
 
-def download_model_images(website_title, website_downloader, page, model_index, model_count, model, model_url_index,
-                          model_url, thread_id):
-    image_urls = website_downloader.get_model_image_urls(thread_id, page, model_index, model_url_index,
-                                                         model_url)  # 获取当前model的所有图片地址, {"image_url": "image_url"}
+def download_model_image(download_info):
+    current_download_info = download_info["current_download_info"]
+    model_urls = current_download_info["model_info"]["urls"]
+    model_url_count = len(model_urls)
+    for model_url_index, model_url in enumerate(model_urls):
+        current_download_info["model_url_index"] = model_url_index + 1
+        current_download_info["model_url_count"] = model_url_count
+        current_download_info["model_url"] = model_url
+
+        try:
+            download_model_sub_page_image(download_info)
+        except Exception as e:
+            print(
+                f"EXCEPT-Model子页下载异常, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, page:{current_download_info["page_index"]}, model_name:{current_download_info["model_info"]["name"]}, sub_page:{model_url_index + 1}/{model_url_count},  exception:{e}")
+
+
+def download_model_sub_page_image(download_info):
+    current_download_info = download_info["current_download_info"]
+    if if_model_downloaded(download_info["website_info"]["title"], download_info["current_download_info"]["model_url"]):
+        print(
+            f"Model子页已下载, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{current_download_info["model_info"]["name"]}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, model_url:{current_download_info["model_url"]}")
+        return
+
+    for second in range(1, 11):  # 每个页码，等待10秒
+        print(
+            f"下载等待, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{current_download_info["model_info"]["name"]}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, model_url:{current_download_info["model_url"]}, {second}秒")
+        time.sleep(1)
+
+    download_model_sub_page_image2(download_info)
+
+
+def download_model_sub_page_image2(download_info):
+    image_urls = download_info["website_downloader"].get_model_image_urls(
+        download_info)  # 获取当前model的所有图片地址, {"image_url": "image_url"}
     if not image_urls:
         return
 
-    model_image_dir = create_model_dir(website_title, page, model["name"])
-    model["dir"] = model_image_dir
+    current_download_info = download_info["current_download_info"]
+    model_image_dir = create_model_dir(download_info["website_info"]["title"], current_download_info["page_index"],
+                                       current_download_info["model_info"]["name"])
+    current_download_info["model_info"]["dir"] = model_image_dir
+    current_download_info["model_image_urls"] = image_urls
 
     print()
     print(
-        f"当前下载Model, thread:{thread_id}, website_title:{website_title}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index + 1}, model_url:{model_url}, 图片数量:{len(image_urls)}")
-    save_model_images(website_title, page, model_index, model_count, model, model_url_index, model_url, image_urls,
-                      thread_id)  # 下载当前model的所有图片
+        f"当前下载Model, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{current_download_info["model_info"]["name"]}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, model_url:{current_download_info["model_url"]}, 图片数量:{len(image_urls)}")
+    save_model_sub_page_images(download_info)  # 下载当前model子页的所有图片
 
 
-def save_model_images(website_title, page, model_index, model_count, model, model_url_index, model_url, image_urls,
-                      thread_id):
+def save_model_sub_page_images(download_info):
+    current_download_info = download_info["current_download_info"]
+    model_image_urls = current_download_info["model_image_urls"]
+
     success_count = 0
-    total = len(image_urls)
-    for index in range(total):
+    image_count = len(model_image_urls)
+    for image_index in range(image_count):
         try:
-            img_data = requests.get(image_urls[index]["image_url"], timeout=constants.http_timeout,
+            image_url = model_image_urls[image_index]["image_url"]
+            image_format = get_image_format(image_url)
+            if not image_format:
+                print(
+                    f"EXCEPT-Image下载失败, 图片格式错误, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, image: {image_index + 1}/{image_count}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{current_download_info["model_info"]["name"]}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, image_url:{model_image_urls[image_index]["image_url"]}")
+                continue
+
+            img_data = requests.get(model_image_urls[image_index]["image_url"], timeout=constants.http_timeout,
                                     headers=constants.http_headers).content
-            with open(f"{model["dir"]}/image_{model_url_index + 1}_{index + 1}.jpg", "wb") as f:
+            with open(
+                    f"{current_download_info["model_info"]["dir"]}/image_{format_number(current_download_info["model_url_index"] + 1)}_{format_number(image_index + 1)}.{image_format}",
+                    "wb") as f:
                 f.write(img_data)
             success_count = success_count + 1
             print(
-                f"下载完成, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index + 1}, image_url:{image_urls[index]["image_url"]}")
+                f"下载完成, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, image: {image_index + 1}/{image_count}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{current_download_info["model_info"]["name"]}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, image_url:{model_image_urls[image_index]["image_url"]}")
         except Exception as e:
             print(
-                f"EXCEPT-Image下载失败, thread:{thread_id}, website_title:{website_title}, {index + 1}/{total}, page:{page}, model:{model_index + 1}/{model_count}, model_name:{model["name"]}, model_url_index:{model_url_index + 1}, image_url:{image_urls[index]["image_url"]}, exception:{e}")
+                f"EXCEPT-Image下载失败, thread:{download_info["thread_id"]}, website:{download_info["website_info"]["title"]}, image: {image_index + 1}/{image_count}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{current_download_info["model_info"]["name"]}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, image_url:{model_image_urls[image_index]["image_url"]}, exception:{e}")
 
-    if success_count < 0.9 * total:  # 下载成功率小于0.6
-        save_statis(total, success_count, model, model_url)
+    if success_count < 0.9 * image_count:  # 下载成功率小于0.9
+        save_statis(image_count, success_count, current_download_info["model_info"], current_download_info["model_url"])
     else:
-        save_model_url_to_file(website_title, model, model_url)
+        save_model_url_to_file(download_info["website_info"]["title"], current_download_info["model_info"],
+                               current_download_info["model_url"])
 
 
-def get_page_url(website_downloader, url_template, thread_id, page_index, **kwargs):
-    page_url = url_template.format(**kwargs)
-    if website_downloader.check_page_exist(thread_id, page_index, page_url):
+def get_image_format(image_url):
+    index = image_url.rfind(".")
+    if index > 0:
+        image_format = image_url[index + 1:]
+        if image_format in ["jpg", "jpeg", "png"]:
+            return image_format
+        return ""
+    else:
+        return ""
+
+
+def get_page_url(download_info, **kwargs):
+    page_url = download_info["website_info"]["url_template"].format(**kwargs)
+    download_info["current_download_info"]["page_url"] = page_url
+    if download_info["website_downloader"].check_page_exist(download_info):
         return page_url
     else:
         return ""
@@ -156,61 +208,75 @@ def if_model_downloaded(website_title, model_url):
             return False
 
 
-def download(thread_id, website_downloader, model_names, min_page, max_page):
+def download(thread_id, website_downloader, selected_model_names, min_page, max_page):
     website_title = ""
+    download_info = {
+        "thread_id": thread_id,
+        "website_downloader": website_downloader,
+        "selected_model_names": selected_model_names,
+        "min_page": min_page,
+        "max_page": max_page,
+    }
     try:
         website_info = website_downloader.get_website_info()  # 获取网站信息
+        download_info["website_info"] = website_info
         website_title = website_info["title"]
         create_website_info(website_title)  # 创建目录和网站信息文件
-        download_image(website_downloader, website_info, thread_id, model_names, min_page, max_page)  # 下载网站下所有页码的图片
-        print(f"下载线程完成，退出, thread:{thread_id}, website_title:{website_title}")
+        download_website_image(download_info)  # 下载网站下所有页码的图片
+        print(f"线程下载完成，退出, thread:{thread_id}, website:{website_title}")
     except Exception as e:
-        print(f"下载线程异常, thread:{thread_id}, website_title:{website_title}, exception:{e}")
+        print(f"下载线程异常, thread:{thread_id}, website:{website_title}, exception:{e}")
 
 
-def single_thread_download_website(website_downloaders, model_names, min_page=1, max_page=constants.largest_page):
+def single_thread_download_website(website_downloaders, selected_model_names, min_page=1,
+                                   max_page=constants.largest_page):
     for index, website_downloader in enumerate(website_downloaders):
-        download(index + 1, website_downloader, model_names, min_page, max_page)
+        download(1, website_downloader, selected_model_names, min_page, max_page)
 
 
-def multi_thread_download_website(website_downloaders, model_names, min_page=1, max_page=constants.largest_page):
+def multi_thread_download_website(website_downloaders, selected_model_names, min_page=1,
+                                  max_page=constants.largest_page):
     for index, website_downloader in enumerate(website_downloaders):
         thread = threading.Thread(target=download,
-                                  args=(index + 1, website_downloader, model_names, min_page, max_page))
+                                  args=(index + 1, website_downloader, selected_model_names, min_page, max_page))
         thread.start()
 
 
-def get_model_names():
-    ns = []
-    # ns.append("stacy cruz")
-    # ns.append("natasha nice")
-    # ns.append("lucy li")
-    # ns.append("jia lissa")
-    # ns.append("alexis crystal")
-    # ns.append("cabiria")
-    # ns.append("lana rhoades")
-    # ns.append("helga lovekaty")
-    # ns.append("sybil")
-    # ns.append("cindy shine")
+def get_selected_model_names():
+    selected_model_names = []
+    # selected_model_names.append("stacy cruz")
+    # selected_model_names.append("natasha nice")
+    # selected_model_names.append("lucy li")
+    # selected_model_names.append("jia lissa")
+    # selected_model_names.append("alexis crystal")
+    # selected_model_names.append("cabiria")
+    # selected_model_names.append("lana rhoades")
+    # selected_model_names.append("helga lovekaty")
+    # selected_model_names.append("sybil")
+    # selected_model_names.append("cindy shine")
 
-    return ns
+    return selected_model_names
 
 
-def get_model_downloaders():
-    ds = []
+def get_website_downloaders():
+    website_downloaders = []
 
-    ds.append(Istrippergirls())
-    ds.append(Virtuagirlgirls())
-    ds.append(PenthousePets())
+    website_downloaders.append(Istrippergirls())
+    website_downloaders.append(Virtuagirlgirls())
+    website_downloaders.append(PenthousePets())
 
-    return ds
+    return website_downloaders
+
+
+def main_download():
+    multi_thread = True
+    website_downloaders = get_website_downloaders()
+    selected_model_names = get_selected_model_names()
+    if multi_thread:
+        multi_thread_download_website(website_downloaders, selected_model_names)
+    else:
+        single_thread_download_website(website_downloaders, selected_model_names)
 
 
 if __name__ == "__main__":
-    multi_thread = True
-    downloaders = get_model_downloaders()
-    names = get_model_names()
-    if multi_thread:
-        multi_thread_download_website(downloaders, names)
-    else:
-        single_thread_download_website(downloaders, names)
+    main_download()

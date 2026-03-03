@@ -34,7 +34,7 @@ print(s)
 #         image_url = image.get("href")
 #         if image_url and image_url.startswith('http'):
 #             image_urls.append({
-#                 "image_url": image_url
+#                 "image_url": image_url.strip()
 #             })
 #
 # print(image_urls)
