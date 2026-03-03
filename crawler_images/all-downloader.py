@@ -32,13 +32,13 @@ def download_website_image(download_info):
             download_page_image(download_info)
         except Exception as e:
             print(
-                f"{fixed_length("error - in page")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{page_index}, exception:{e}")
+                f"{"error - in page":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{page_index:>3}, exception:{e}")
 
 
 def download_page_image(download_info):
     page_index = download_info["current_download_info"]["page_index"]
     print(
-        f"{fixed_length("current page")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{page_index}")
+        f"{"current page":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{page_index:>3}")
 
     page_url = get_page_url(download_info, page=page_index)  # 获取当前页码的URL地址，如果没有该页码就返回空
     if not page_url:
@@ -60,7 +60,7 @@ def download_page_image(download_info):
             download_model_image(download_info)
         except Exception as e:
             print(
-                f"{fixed_length("error - in model")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{current_download_info["page_index"]}({model_index + 1}/{model_count}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, exception:{e}")
+                f"{"error - in model":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({(model_index + 1):>3}/{model_count:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, exception:{e}")
 
 
 def download_model_image(download_info):
@@ -76,19 +76,19 @@ def download_model_image(download_info):
             download_model_sub_page_image(download_info)
         except Exception as e:
             print(
-                f"{fixed_length("error - in sub page")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{current_download_info["page_index"]}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{model_url_index + 1}/{model_url_count},  exception:{e}")
+                f"{"error - in sub page":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{(model_url_index + 1):>3}/{model_url_count:>3},  exception:{e}")
 
 
 def download_model_sub_page_image(download_info):
     current_download_info = download_info["current_download_info"]
     if if_model_downloaded(download_info["website_info"]["title"], download_info["current_download_info"]["model_url"]):
         print(
-            f"{fixed_length("page downloaded")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, model_url:{current_download_info["model_url"]}")
+            f"{"page downloaded":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}")
         return
 
     for second in range(1, 11):  # 每个页码，等待10秒
         print(
-            f"{fixed_length("sub page wait")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, model_url:{current_download_info["model_url"]}, {second}秒")
+            f"{"sub page wait":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, {second}秒")
         time.sleep(1)
 
     download_model_sub_page_image2(download_info)
@@ -108,7 +108,7 @@ def download_model_sub_page_image2(download_info):
 
     print()
     print(
-        f"{fixed_length("current sub page")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, model_url:{current_download_info["model_url"]}, 图片数量:{len(image_urls)}")
+        f"{"current sub page":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, 图片数量:{len(image_urls)}")
     save_model_sub_page_images(download_info)  # 下载当前model子页的所有图片
 
 
@@ -124,7 +124,7 @@ def save_model_sub_page_images(download_info):
             image_format = get_image_format(image_url)
             if not image_format:
                 print(
-                    f"{fixed_length("error - image format")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, image: {image_index + 1}/{image_count}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, image_url:{model_image_urls[image_index]["image_url"]}")
+                    f"{"error - image format":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{model_image_urls[image_index]["image_url"]}")
                 continue
 
             img_data = requests.get(model_image_urls[image_index]["image_url"], timeout=constants.http_timeout,
@@ -135,10 +135,10 @@ def save_model_sub_page_images(download_info):
                 f.write(img_data)
             success_count = success_count + 1
             print(
-                f"{fixed_length("success")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, image_url:{model_image_urls[image_index]["image_url"]}")
+                f"{"success":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{model_image_urls[image_index]["image_url"]}")
         except Exception as e:
             print(
-                f"{fixed_length("error - download")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, image_url:{model_image_urls[image_index]["image_url"]}, exception:{e}")
+                f"{"error - download":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{model_image_urls[image_index]["image_url"]}, exception:{e}")
 
     if success_count < 0.9 * image_count:  # 下载成功率小于0.9
         save_statis(image_count, success_count, current_download_info["model_info"], current_download_info["model_url"])
@@ -221,23 +221,23 @@ def download(thread_id, website_downloader, selected_model_names, min_page, max_
         website_title = website_info["title"]
         create_website_info(website_title)  # 创建目录和网站信息文件
         download_website_image(download_info)  # 下载网站下所有页码的图片
-        print(f"{fixed_length("thread finished")}, thread:{thread_id}, website:{fixed_length(website_title, width=15)}")
+        print(f"{"thread finished":<15}, thread:{thread_id:>2}, website:{website_title:<15}")
     except Exception as e:
         print(
-            f"{fixed_length("thread error")}, thread:{thread_id}, website:{fixed_length(website_title, width=15)}, exception:{e}")
+            f"{"thread error":<15}, thread:{thread_id:>2}, website:{website_title:<15}, exception:{e}")
 
 
 def single_thread_download_website(website_downloaders, selected_model_names, min_page=1,
                                    max_page=constants.largest_page):
     for index, website_downloader in enumerate(website_downloaders):
-        download(format_number(1, 2), website_downloader, selected_model_names, min_page, max_page)
+        download(1, website_downloader, selected_model_names, min_page, max_page)
 
 
 def multi_thread_download_website(website_downloaders, selected_model_names, min_page=1,
                                   max_page=constants.largest_page):
     for index, website_downloader in enumerate(website_downloaders):
         thread = threading.Thread(target=download,
-                                  args=(format_number(index + 1, 2), website_downloader, selected_model_names, min_page,
+                                  args=(index + 1, website_downloader, selected_model_names, min_page,
                                         max_page))
         thread.start()
 

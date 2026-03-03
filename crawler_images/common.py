@@ -11,7 +11,7 @@ def get_page_html(download_info):
                                 headers=constants.http_headers)
     except Exception as e:
         print(
-            f"{fixed_length("error - page html")}, thread:{download_info["thread_id"]}, page:{current_download_info["page_index"]}, page_url:{current_download_info["page_url"]}, exception:{e}")
+            f"{"error - page html":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}, page_url:{current_download_info["page_url"]}, exception:{e}")
         return None
     return BeautifulSoup(response.text, "html.parser")
 
@@ -23,7 +23,7 @@ def get_model_image_html(download_info):
                                 headers=constants.http_headers)
     except Exception as e:
         print(
-            f"{fixed_length("error - image html")}, thread:{download_info["thread_id"]}, website:{fixed_length(download_info["website_info"]["title"], width=15)}, page:{current_download_info["page_index"]}({current_download_info["model_index_in_page"]}/{current_download_info["model_count_in_page"]}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]}/{current_download_info["model_url_count"]}, model_url:{current_download_info["model_url"]}, exception:{e}")
+            f"{"error - image html":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, exception:{e}")
         return None
     return BeautifulSoup(response.text, "html.parser")
 
@@ -40,7 +40,7 @@ def is_selected_model(model_name, download_info):
             break
     if not selected:
         print(
-            f"{fixed_length("unselected")}, thread_id:{download_info["thread_id"]}, page:{download_info["current_download_info"]["page_index"]}, model_name:{fixed_length(model_name, width=30)}")
+            f"{"unselected":<15}, thread_id:{download_info["thread_id"]:>2}, page:{download_info["current_download_info"]["page_index"]:<15}, model_name:{fixed_length(model_name, width=30)}")
     return selected
 
 
