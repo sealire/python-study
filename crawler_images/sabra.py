@@ -4,12 +4,12 @@ from urllib.parse import urljoin
 from crawler_images.common import is_selected_model, get_page_html, get_model_image_html
 
 
-class GirlAtlasBimilstory:
+class Sabra:
 
     def get_website_info(self):
         return {
-            "title": "Bimilstory",
-            "url_template": "https://girl-atlas.xyz/tag?id=673eeadf2228a9d7404c56b8&p={page}",
+            "title": "sabra",
+            "url_template": "https://girl-atlas.xyz/tag?id=57653d1458e03930fbb7e417&p={page}",
         }
 
     def check_page_exist(self, download_info):
@@ -27,10 +27,9 @@ class GirlAtlasBimilstory:
 
     def get_models_in_page(self, download_info):
         model_list = []
-
         html_text = get_page_html(download_info)
-
-        # print(response.text)
+        if not html_text:
+            return model_list
         container = html_text.find('div', id='div-tag')
         model_cards = container.find_all("div", class_='card-body')
         for index, model_card in enumerate(model_cards):

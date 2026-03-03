@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
-from crawler_images.penthouse_pets import PenthousePets
+from crawler_images.penthouse import PenthousePets
 
 # c = PenthousePets()
 # model_list = c.get_models(1, "", "")

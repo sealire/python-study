@@ -7,7 +7,7 @@ class Sgirlsweb:
 
     def get_website_info(self):
         return {
-            "title": "Sgirlsweb",
+            "title": "sgirlsweb",
             "url_template": "https://www.sgirlsweb.com/all-sexy-girls/{page}/",
         }
 

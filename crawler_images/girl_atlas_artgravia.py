@@ -8,7 +8,7 @@ class GirlAtlasArtGravia:
 
     def get_website_info(self):
         return {
-            "title": "girl-atlas-ArtGravia",
+            "title": "ArtGravia",
             "url_template": "https://girl-atlas.xyz/tag?id=674420d6e980d23038fae055&p={page}",
         }
 
