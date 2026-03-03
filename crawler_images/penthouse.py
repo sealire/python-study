@@ -5,15 +5,18 @@ import re
 from bs4 import BeautifulSoup
 
 from crawler_images.common import is_selected_model
-
-local_base_dir = "F:\\GIT\\python-study\\crawler_images\\images\\penthouse"
+from crawler_images.constants import project_dir
 
 
 class Penthouse:
 
+    def __init__(self):
+        self.website_title = "penthouse"
+        self.local_base_dir = project_dir + "\\images\\" + self.website_title
+
     def get_website_info(self):
         return {
-            "title": "penthouse",
+            "title": self.website_title,
             "url_template": "https://penthouse-pets.net/{page}",
         }
 
@@ -22,7 +25,7 @@ class Penthouse:
 
     def get_models_in_page(self, download_info):
         model_list = []
-        dir = local_base_dir + "\\page\\" + str(download_info["current_download_info"]["page_index"])
+        dir = self.local_base_dir + "\\page\\" + str(download_info["current_download_info"]["page_index"])
         html_files = []
         pattern = os.path.join(dir, "*.html")
         html_files.extend(glob.glob(pattern))
@@ -39,14 +42,14 @@ class Penthouse:
                 model_name = model_name[:100]
             model_name = model_name.strip()
             if is_selected_model(model_name, download_info):
-                model_url = html_file.replace(local_base_dir, "")
+                model_url = html_file.replace(self.local_base_dir, "")
                 model_list.append({"name": model_name, "urls": [model_url]})
 
         return model_list
 
     def get_model_image_urls(self, download_info):
         image_urls = []
-        with open(local_base_dir + download_info["current_download_info"]["model_url"], 'r', encoding='utf-8') as file:
+        with open(self.local_base_dir + download_info["current_download_info"]["model_url"], 'r', encoding='utf-8') as file:
             html_text = file.read()
         html_text = BeautifulSoup(html_text, "html.parser")
         container = html_text.find('div', class_='space-y-6')

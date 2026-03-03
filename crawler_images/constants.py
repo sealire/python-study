@@ -1,5 +1,6 @@
 base_dir = "images"  # 图片目录
 largest_page = 10000  # 最大页码
+project_dir = "F:\\GIT\\python-study\\crawler_images"
 
 http_headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.139 Safari/537.36',
