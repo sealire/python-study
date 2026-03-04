@@ -28,7 +28,7 @@ class Sgirlsweb:
             if is_selected_model(model_name, download_info):
                 model_name_split = model_name.replace(' ', "-").lower()
                 model_urls = self.get_model_urls(download_info, model_index, model_name_split)
-                model_dir_name = model_name + "-" + str(random.randint(100000, 999999))
+                model_dir_name = model_name + " - " + str(random.randint(100000, 999999))
                 model_list.append({"name": model_name, "dir_name": model_dir_name, "urls": model_urls})
 
         return model_list

@@ -36,7 +36,7 @@ class Penthouse2:
             if is_selected_model(model_name, download_info):
                 model_url = model_card_a.get("href")
                 model_url = urljoin(download_info["current_download_info"]["page_url"], model_url)
-                model_dir_name = model_name + "-" + str(random.randint(100000, 999999))
+                model_dir_name = model_name + " - " + str(random.randint(100000, 999999))
                 model_list.append({"name": model_name, "dir_name": model_dir_name, "urls": [model_url]})
 
         return model_list
