@@ -25,23 +25,29 @@ def get_page_html(download_info):
 
 def get_page_html_by_selenium(download_info):
     current_download_info = download_info["current_download_info"]
-    try:
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
+    retry_count = 3
+    success = False
+    driver = get_webdriver()
+    while retry_count > 0:
+        try:
+            driver.get(current_download_info["page_url"])
+            wait = WebDriverWait(driver, 30)
+            element = wait.until(
+                EC.presence_of_element_located((By.TAG_NAME, "div"))
+            )
+            success = True
+        except Exception as e:
+            print(
+                f"{"error - page html":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}, page_url:{current_download_info["page_url"]}, retry:{4 - retry_count} exception:{e}")
+            success = False
+        if success:
+            break
+        retry_count = retry_count - 1
 
-        driver = webdriver.Chrome(options=chrome_options)
-        driver.get(current_download_info["page_url"])
-        wait = WebDriverWait(driver, 30)
-        element = wait.until(
-            EC.presence_of_element_located((By.TAG_NAME, "div"))
-        )
-    except Exception as e:
-        print(
-            f"{"error - page html":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}, page_url:{current_download_info["page_url"]}, exception:{e}")
+    if success:
+        return BeautifulSoup(driver.page_source, "html.parser")
+    else:
         return None
-    return BeautifulSoup(driver.page_source, "html.parser")
 
 
 def get_model_image_html(download_info):
@@ -58,23 +64,29 @@ def get_model_image_html(download_info):
 
 def get_model_image_html_by_selenium(download_info):
     current_download_info = download_info["current_download_info"]
-    try:
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
+    retry_count = 3
+    success = False
+    driver = get_webdriver()
+    while retry_count > 0:
+        try:
+            driver.get(current_download_info["model_url"])
+            wait = WebDriverWait(driver, 30)
+            element = wait.until(
+                EC.presence_of_element_located((By.TAG_NAME, "div"))
+            )
+            success = True
+        except Exception as e:
+            print(
+                f"{"error - image html":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, retry:{4 - retry_count}, exception:{e}")
+            success = False
+        if success:
+            break
+        retry_count = retry_count - 1
 
-        driver = webdriver.Chrome(options=chrome_options)
-        driver.get(current_download_info["model_url"])
-        wait = WebDriverWait(driver, 30)
-        element = wait.until(
-            EC.presence_of_element_located((By.TAG_NAME, "div"))
-        )
-    except Exception as e:
-        print(
-            f"{"error - image html":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, exception:{e}")
+    if success:
+        return BeautifulSoup(driver.page_source, "html.parser")
+    else:
         return None
-    return BeautifulSoup(driver.page_source, "html.parser")
 
 
 def is_selected_model(model_name, download_info):
@@ -98,3 +110,12 @@ def fixed_length(s, width=25, fill_char=' '):
         return s[:width]
     else:
         return s.ljust(width, fill_char)
+
+
+def get_webdriver():
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    return webdriver.Chrome(options=chrome_options)
