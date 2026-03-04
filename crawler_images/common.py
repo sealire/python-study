@@ -119,3 +119,36 @@ def get_webdriver():
     chrome_options.add_argument("--disable-dev-shm-usage")
 
     return webdriver.Chrome(options=chrome_options)
+
+
+def get_html_by_selenium(url):
+    driver = get_webdriver()
+    driver.get(url)
+    wait = WebDriverWait(driver, 30)
+    element = wait.until(
+        EC.presence_of_element_located((By.TAG_NAME, "body"))
+    )
+    return driver.page_source
+
+
+def get_image_format(image_url):
+    index = image_url.rfind(".")
+    if index > 0:
+        image_format = image_url[index + 1:]
+        if image_format in ["jpg", "jpeg", "png"]:
+            return image_format
+        return ""
+    else:
+        return ""
+
+
+def format_number(number, width=4):
+    return f"{number:0{width}d}"
+
+
+def save_image(image_url, image_format, sub_page_index, image_index, model_dir):
+    img_data = requests.get(image_url, timeout=constants.http_timeout, headers=constants.http_headers).content
+    with open(
+            f"{model_dir}/image_{format_number(sub_page_index + 1)}_{format_number(image_index + 1)}.{image_format}",
+            "wb") as f:
+        f.write(img_data)

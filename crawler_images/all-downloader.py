@@ -6,7 +6,8 @@ import os
 import threading
 
 from crawler_images import constants
-from crawler_images.common import fixed_length
+from crawler_images.common import fixed_length, get_image_format, format_number, save_image
+from crawler_images.deskbabes import Deskbabes
 from crawler_images.istripper import Istripper
 from crawler_images.penthouse import Penthouse
 from crawler_images.penthouse_2 import Penthouse2
@@ -123,32 +124,11 @@ def download_model_sub_page_image2(download_info):
 
 def save_model_sub_page_images(download_info):
     current_download_info = download_info["current_download_info"]
-    model_image_urls = current_download_info["model_image_urls"]
-
-    success_count = 0
-    image_count = len(model_image_urls)
-    for image_index in range(image_count):
-        try:
-            image_url = model_image_urls[image_index]["image_url"]
-            image_format = get_image_format(image_url)
-            if not image_format:
-                print(
-                    f"{"error - image format":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{model_image_urls[image_index]["image_url"]}")
-                continue
-
-            img_data = requests.get(model_image_urls[image_index]["image_url"], timeout=constants.http_timeout,
-                                    headers=constants.http_headers).content
-            with open(
-                    f"{current_download_info["model_info"]["dir"]}/image_{format_number(current_download_info["model_url_index"] + 1)}_{format_number(image_index + 1)}.{image_format}",
-                    "wb") as f:
-                f.write(img_data)
-            success_count = success_count + 1
-            print(
-                f"{"success":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{model_image_urls[image_index]["image_url"]}")
-        except Exception as e:
-            print(
-                f"{"error - download":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{model_image_urls[image_index]["image_url"]}, exception:{e}")
-
+    image_count = len(current_download_info["model_image_urls"])
+    if download_info["website_info"]["independent_download_image"]:
+        success_count = download_info["website_downloader"].save_images(download_info)
+    else:
+        success_count = save_images(download_info)
     if success_count < 0.9 * image_count:  # 下载成功率小于0.9
         save_statis(image_count, success_count, current_download_info["model_info"], current_download_info["model_url"])
     else:
@@ -156,15 +136,36 @@ def save_model_sub_page_images(download_info):
                                current_download_info["model_url"])
 
 
-def get_image_format(image_url):
-    index = image_url.rfind(".")
-    if index > 0:
-        image_format = image_url[index + 1:]
-        if image_format in ["jpg", "jpeg", "png"]:
-            return image_format
-        return ""
-    else:
-        return ""
+def save_images(download_info):
+    current_download_info = download_info["current_download_info"]
+    model_image_urls = current_download_info["model_image_urls"]
+    success_count = 0
+    image_count = len(model_image_urls)
+    for image_index, image in enumerate(model_image_urls):
+        image_url = image["image_url"]
+        try:
+            image_format = get_image_format(image_url)
+            if not image_format:
+                print(
+                    f"{"error - image format":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}")
+                continue
+
+            save_image(image_url, image_format, current_download_info["model_url_index"], image_index,
+                       current_download_info["model_info"]["dir"])
+
+            # img_data = requests.get(image_url, timeout=constants.http_timeout, headers=constants.http_headers).content
+            # with open(
+            #         f"{current_download_info["model_info"]["dir"]}/image_{format_number(current_download_info["model_url_index"] + 1)}_{format_number(image_index + 1)}.{image_format}",
+            #         "wb") as f:
+            #     f.write(img_data)
+            success_count = success_count + 1
+            print(
+                f"{"success":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}")
+        except Exception as e:
+            print(
+                f"{"error - download":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}, exception:{e}")
+
+    return success_count
 
 
 def get_page_url(download_info, **kwargs):
@@ -187,10 +188,6 @@ def create_model_dir(website_title, page, model_dir_name):
     model_image_dir = os.path.join(constants.base_dir, website_title, page_segment, format_number(page), model_dir_name)
     os.makedirs(model_image_dir, exist_ok=True)
     return model_image_dir
-
-
-def format_number(number, width=4):
-    return f"{number:0{width}d}"
 
 
 def save_statis(total, success_count, model, model_url):
@@ -270,7 +267,8 @@ def get_website_downloaders():
 
     # website_downloaders.append(Istripper())
     # website_downloaders.append(Virtuagirls())
-    website_downloaders.append(Penthouse2(download_min_page=4))
+    # website_downloaders.append(Penthouse2())
+    website_downloaders.append(Deskbabes())
 
     return website_downloaders
 

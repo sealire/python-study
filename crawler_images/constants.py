@@ -33,6 +33,7 @@ download_info_template = {
         "max_page": 10,
         "download_min_page": 1,
         "download_max_page": 10,
+        "independent_download_image": False,
     },
     "current_download_info": {
         "page_index": 1,

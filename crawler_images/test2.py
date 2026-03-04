@@ -1,20 +1,16 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
+import urllib
 
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
+import requests
 
-driver = webdriver.Chrome(options=chrome_options)
-driver.get("https://deskbabesgirls.com/galleries/0724_lucy_li.html")
-# 等待特定元素加载完成
-wait = WebDriverWait(driver, 30)
-element = wait.until(
-    EC.presence_of_element_located((By.TAG_NAME, "h2"))
-)
+from crawler_images.common import get_html_by_selenium
+#
+# html_url = "https://deskbabesgirls.com/galleries/0011_sandra_shine.html"
+# html_text = get_html_by_selenium(html_url)
+# print(html_text)
 
-print(driver.page_source)
+headers = {
+    'Referer': 'https://deskbabesgirls.com',
+    'User-Agent': 'Mozilla/5.0'
+}
+img_url = "https://deskbabesgirls.com/images/data/c0104/full/VGI0642P010010.jpg"
+urllib.request.urlretrieve(img_url, 'image.jpg')
