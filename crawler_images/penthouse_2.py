@@ -2,23 +2,22 @@ import random
 import re
 from urllib.parse import urljoin
 
-from bs4 import BeautifulSoup
-
 from crawler_images.common import is_selected_model, get_page_html_by_selenium, get_model_image_html_by_selenium
-from crawler_images.constants import project_dir
 
 
 class Penthouse2:
 
-    def __init__(self):
-        self.website_title = "penthouse"
-        self.local_base_dir = project_dir + "\\images\\" + self.website_title
+    def __init__(self, download_min_page=1, download_max_page=-1):
+        self.download_min_page = download_min_page
+        self.download_max_page = download_max_page
 
     def get_website_info(self):
         return {
-            "title": self.website_title,
+            "title": "penthouse",
             "url_template": "https://penthouse-galleries.net/penthouse_galleries_{page}.html",
             "max_page": 26,
+            "download_min_page": self.download_min_page,
+            "download_max_page": self.download_max_page,
         }
 
     def get_models_in_page(self, download_info):

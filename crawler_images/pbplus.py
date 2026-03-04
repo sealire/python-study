@@ -7,11 +7,17 @@ from crawler_images.common import is_selected_model, get_page_html, get_model_im
 
 class Pbplus:
 
+    def __init__(self, download_min_page=1, download_max_page=-1):
+        self.download_min_page = download_min_page
+        self.download_max_page = download_max_page
+
     def get_website_info(self):
         return {
             "title": "pbplus",
             "url_template": "https://girl-atlas.xyz/tag?id=67365a5d74ea2f931bc69461&p={page}",
             "max_page": 6,
+            "download_min_page": self.download_min_page,
+            "download_max_page": self.download_max_page,
         }
 
     def get_models_in_page(self, download_info):

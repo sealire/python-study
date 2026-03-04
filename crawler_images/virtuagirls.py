@@ -6,11 +6,17 @@ from crawler_images.common import is_selected_model, get_page_html, get_model_im
 
 class Virtuagirls:
 
+    def __init__(self, download_min_page=1, download_max_page=-1):
+        self.download_min_page = download_min_page
+        self.download_max_page = download_max_page
+
     def get_website_info(self):
         return {
             "title": "virtuagirls",
             "url_template": "https://virtuagirlgirls.com/?page={page}",
             "max_page": 40,
+            "download_min_page": self.download_min_page,
+            "download_max_page": self.download_max_page,
         }
 
     def get_models_in_page(self, download_info):

@@ -7,12 +7,19 @@ from crawler_images.common import is_selected_model, get_page_html, get_model_im
 
 class GirlAtlas:
 
+    def __init__(self, download_min_page=1, download_max_page=-1):
+        self.download_min_page = download_min_page
+        self.download_max_page = download_max_page
+
     def get_website_info(self):
         return {
             "title": "girl-atlas",
             "url_template": "https://girl-atlas.xyz/?p={page}",
             "max_page": 202,
+            "download_min_page": self.download_min_page,
+            "download_max_page": self.download_max_page,
         }
+
     def get_models_in_page(self, download_info):
         model_list = []
         html_text = get_page_html(download_info)

@@ -7,11 +7,17 @@ from crawler_images.common import is_selected_model, get_page_html, get_model_im
 
 class MPLStudios:
 
+    def __init__(self, download_min_page=1, download_max_page=-1):
+        self.download_min_page = download_min_page
+        self.download_max_page = download_max_page
+
     def get_website_info(self):
         return {
             "title": "mplstudios",
             "url_template": "https://girl-atlas.xyz/tag?id=67248fb43197e32d3bd1cdb5&p={page}",
             "max_page": 13,
+            "download_min_page": self.download_min_page,
+            "download_max_page": self.download_max_page,
         }
 
     def get_models_in_page(self, download_info):

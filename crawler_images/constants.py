@@ -31,9 +31,9 @@ download_info_template = {
         "title": "website_title",
         "url_template": "https://url_template",
         "max_page": 10,
+        "download_min_page": 1,
+        "download_max_page": 10,
     },
-    "min_page": 1,
-    "max_page": 100,
     "current_download_info": {
         "page_index": 1,
         "page_url": "page_url",

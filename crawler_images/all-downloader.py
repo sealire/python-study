@@ -24,7 +24,13 @@ def create_website_info(website_title):
 
 
 def download_website_image(download_info):
-    for page_index in range(download_info["min_page"], download_info["max_page"] + 1):  # 遍历页码
+    website_info = download_info["website_info"]
+    download_min_page = website_info["download_min_page"]
+    download_max_page = website_info["download_max_page"]
+    if download_max_page < 0:
+        download_max_page = website_info["max_page"]
+
+    for page_index in range(download_min_page, download_max_page + 1):  # 遍历页码
         current_download_info = {
             "page_index": page_index
         }
@@ -162,7 +168,12 @@ def get_image_format(image_url):
 
 
 def get_page_url(download_info, **kwargs):
-    if download_info["current_download_info"]["page_index"] <= download_info["website_info"]["max_page"]:
+    website_info = download_info["website_info"]
+    download_max_page = website_info["download_max_page"]
+    if download_max_page < 0:
+        download_max_page = website_info["max_page"]
+
+    if download_info["current_download_info"]["page_index"] <= download_max_page:
         return download_info["website_info"]["url_template"].format(**kwargs)
     else:
         return ""
@@ -207,21 +218,16 @@ def if_model_downloaded(website_title, model_url):
             return False
 
 
-def download(thread_id, website_downloader, selected_model_names, min_page, max_page):
+def download(thread_id, website_downloader, selected_model_names):
     website_title = ""
     download_info = {
         "thread_id": thread_id,
         "website_downloader": website_downloader,
         "selected_model_names": selected_model_names,
-        "min_page": min_page,
     }
     try:
         website_info = website_downloader.get_website_info()  # 获取网站信息
         download_info["website_info"] = website_info
-        if max_page > 0:
-            download_info["max_page"] = max_page
-        else:
-            download_info["max_page"] = website_info["max_page"]
         website_title = website_info["title"]
         create_website_info(website_title)  # 创建目录和网站信息文件
         download_website_image(download_info)  # 下载网站下所有页码的图片
@@ -231,16 +237,15 @@ def download(thread_id, website_downloader, selected_model_names, min_page, max_
             f"{"thread error":<25}, thread:{thread_id:>2}, website:{website_title:<15}, exception:{e}")
 
 
-def single_thread_download_website(website_downloaders, selected_model_names, min_page=1, max_page=-1):
+def single_thread_download_website(website_downloaders, selected_model_names):
     for index, website_downloader in enumerate(website_downloaders):
-        download(1, website_downloader, selected_model_names, min_page, max_page)
+        download(1, website_downloader, selected_model_names)
 
 
-def multi_thread_download_website(website_downloaders, selected_model_names, min_page=1, max_page=-1):
+def multi_thread_download_website(website_downloaders, selected_model_names):
     for index, website_downloader in enumerate(website_downloaders):
         thread = threading.Thread(target=download,
-                                  args=(index + 1, website_downloader, selected_model_names, min_page,
-                                        max_page))
+                                  args=(index + 1, website_downloader, selected_model_names))
         thread.start()
 
 
@@ -265,7 +270,7 @@ def get_website_downloaders():
 
     # website_downloaders.append(Istripper())
     # website_downloaders.append(Virtuagirls())
-    website_downloaders.append(Penthouse())
+    website_downloaders.append(Penthouse2(download_min_page=4))
 
     return website_downloaders
 
@@ -275,7 +280,7 @@ def main_download():
     website_downloaders = get_website_downloaders()
     selected_model_names = get_selected_model_names()
     if multi_thread:
-        multi_thread_download_website(website_downloaders, selected_model_names, min_page=3, max_page=3)
+        multi_thread_download_website(website_downloaders, selected_model_names)
     else:
         single_thread_download_website(website_downloaders, selected_model_names)
 

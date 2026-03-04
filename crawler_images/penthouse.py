@@ -11,15 +11,19 @@ from crawler_images.constants import project_dir
 
 class Penthouse:
 
-    def __init__(self):
+    def __init__(self, download_min_page=1, download_max_page=-1):
         self.website_title = "penthouse"
         self.local_base_dir = project_dir + "\\images\\" + self.website_title
+        self.download_min_page = download_min_page
+        self.download_max_page = download_max_page
 
     def get_website_info(self):
         return {
             "title": self.website_title,
             "url_template": "https://penthouse-galleries.net/penthouse_galleries_{page}.html",
             "max_page": 26,
+            "download_min_page": self.download_min_page,
+            "download_max_page": self.download_max_page,
         }
 
     def get_models_in_page(self, download_info):
