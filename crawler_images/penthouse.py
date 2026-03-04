@@ -1,5 +1,6 @@
 import glob
 import os
+import random
 import re
 
 from bs4 import BeautifulSoup
@@ -17,12 +18,10 @@ class Penthouse:
     def get_website_info(self):
         return {
             "title": self.website_title,
-            "url_template": "https://penthouse-pets.net/{page}",
+            "url_template": "https://penthouse-galleries.net/penthouse_galleries_{page}.html",
             "max_page": 26,
         }
 
-    def check_page_exist(self, download_info):
-        return download_info["current_download_info"]["page_index"] <= download_info["website_info"]["max_page"]
     def get_models_in_page(self, download_info):
         model_list = []
         dir = self.local_base_dir + "\\page\\" + str(download_info["current_download_info"]["page_index"])
@@ -36,14 +35,14 @@ class Penthouse:
             start = html_file.rfind("\\")
             end = html_file.rfind(".htm")
             model_name = html_file[start + 1:end]
-            model_name = model_name.replace('- Penthouse Galleries', "")
+            index = model_name.find(" - ")
+            model_name = model_name[:index]
             model_name = re.sub(r'[?/\'|.]', '', model_name)
-            if len(model_name) > 100:
-                model_name = model_name[:100]
             model_name = model_name.strip()
             if is_selected_model(model_name, download_info):
                 model_url = html_file.replace(self.local_base_dir, "")
-                model_list.append({"name": model_name, "urls": [model_url]})
+                model_dir_name = model_name + "-" + str(random.randint(100000, 999999))
+                model_list.append({"name": model_name, "dir_name": model_dir_name, "urls": [model_url]})
 
         return model_list
 

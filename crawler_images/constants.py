@@ -1,5 +1,4 @@
 base_dir = "images"  # 图片目录
-largest_page = 10000  # 最大页码
 project_dir = "F:\\GIT\\python-study\\crawler_images"
 
 http_headers = {
@@ -43,6 +42,7 @@ download_info_template = {
         "model_info": {
             "dir": "model_dir",
             "name": "model_name",
+            "dir_name": "dir_name",
             "urls": "model_urls"
         },
         "model_url_index": 1,

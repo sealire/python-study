@@ -1,3 +1,4 @@
+import random
 import re
 
 from crawler_images.common import is_selected_model, get_page_html, get_model_image_html
@@ -12,18 +13,6 @@ class Sgirlsweb:
             "max_page": 9,
         }
 
-    def check_page_exist(self, download_info):
-        html_text = get_page_html(download_info)
-        if not html_text:
-            return False
-        container = html_text.find('ul', id='iids')
-        if not container:
-            return False
-        model_cards = container.find_all("li", class_='item')
-        if model_cards:
-            return True
-        else:
-            return False
     def get_models_in_page(self, download_info):
         model_list = []
         html_text = get_page_html(download_info)
@@ -39,7 +28,8 @@ class Sgirlsweb:
             if is_selected_model(model_name, download_info):
                 model_name_split = model_name.replace(' ', "-").lower()
                 model_urls = self.get_model_urls(download_info, model_index, model_name_split)
-                model_list.append({"name": model_name, "urls": model_urls})
+                model_dir_name = model_name + "-" + str(random.randint(100000, 999999))
+                model_list.append({"name": model_name, "dir_name": model_dir_name, "urls": model_urls})
 
         return model_list
 

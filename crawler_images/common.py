@@ -1,7 +1,14 @@
+import random
 import requests
 from bs4 import BeautifulSoup
 
 from crawler_images import constants
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
 
 def get_page_html(download_info):
@@ -11,21 +18,63 @@ def get_page_html(download_info):
                                 headers=constants.http_headers)
     except Exception as e:
         print(
-            f"{"error - page html":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}, page_url:{current_download_info["page_url"]}, exception:{e}")
+            f"{"error - page html":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}, page_url:{current_download_info["page_url"]}, exception:{e}")
         return None
     return BeautifulSoup(response.text, "html.parser")
+
+
+def get_page_html_by_selenium(download_info):
+    current_download_info = download_info["current_download_info"]
+    try:
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.get(current_download_info["page_url"])
+        wait = WebDriverWait(driver, 30)
+        element = wait.until(
+            EC.presence_of_element_located((By.TAG_NAME, "div"))
+        )
+    except Exception as e:
+        print(
+            f"{"error - page html":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}, page_url:{current_download_info["page_url"]}, exception:{e}")
+        return None
+    return BeautifulSoup(driver.page_source, "html.parser")
 
 
 def get_model_image_html(download_info):
     current_download_info = download_info["current_download_info"]
     try:
-        response = requests.get(download_info["current_download_info"]["model_url"], timeout=constants.http_timeout,
+        response = requests.get(current_download_info["model_url"], timeout=constants.http_timeout,
                                 headers=constants.http_headers)
     except Exception as e:
         print(
-            f"{"error - image html":<15}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, exception:{e}")
+            f"{"error - image html":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, exception:{e}")
         return None
     return BeautifulSoup(response.text, "html.parser")
+
+
+def get_model_image_html_by_selenium(download_info):
+    current_download_info = download_info["current_download_info"]
+    try:
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.get(current_download_info["model_url"])
+        wait = WebDriverWait(driver, 30)
+        element = wait.until(
+            EC.presence_of_element_located((By.TAG_NAME, "div"))
+        )
+    except Exception as e:
+        print(
+            f"{"error - image html":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, exception:{e}")
+        return None
+    return BeautifulSoup(driver.page_source, "html.parser")
 
 
 def is_selected_model(model_name, download_info):

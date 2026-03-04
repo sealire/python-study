@@ -1,3 +1,4 @@
+import random
 import re
 
 from crawler_images.common import is_selected_model, get_page_html, get_model_image_html
@@ -24,7 +25,8 @@ class Istripper:
             model_name = model_name.strip()
             if is_selected_model(model_name, download_info):
                 model_url = model_card.get("href")
-                model_list.append({"name": model_name, "urls": [model_url]})
+                model_dir_name = model_name + "-" + str(random.randint(100000, 999999))
+                model_list.append({"name": model_name, "dir_name": model_dir_name, "urls": [model_url]})
 
         return model_list
 
