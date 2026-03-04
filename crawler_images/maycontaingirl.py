@@ -10,21 +10,8 @@ class MayContainGirl:
         return {
             "title": "maycontaingirl",
             "url_template": "https://girl-atlas.xyz/tag?id=6724c241d4f26ac5c525e0b1&p={page}",
+            "max_page": 4,
         }
-
-    def check_page_exist(self, download_info):
-        html_text = get_page_html(download_info)
-        if not html_text:
-            return False
-        container = html_text.find('div', id='div-tag')
-        if not container:
-            return False
-        model_cards = container.find_all("div", class_='card-body')
-        if model_cards:
-            return True
-        else:
-            return False
-
     def get_models_in_page(self, download_info):
         model_list = []
         html_text = get_page_html(download_info)

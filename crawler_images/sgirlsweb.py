@@ -9,6 +9,7 @@ class Sgirlsweb:
         return {
             "title": "sgirlsweb",
             "url_template": "https://www.sgirlsweb.com/all-sexy-girls/{page}/",
+            "max_page": 9,
         }
 
     def check_page_exist(self, download_info):
@@ -23,7 +24,6 @@ class Sgirlsweb:
             return True
         else:
             return False
-
     def get_models_in_page(self, download_info):
         model_list = []
         html_text = get_page_html(download_info)

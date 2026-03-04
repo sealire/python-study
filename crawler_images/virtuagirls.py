@@ -9,6 +9,7 @@ class Virtuagirls:
         return {
             "title": "virtuagirls",
             "url_template": "https://virtuagirlgirls.com/?page={page}",
+            "max_page": 40,
         }
 
     def check_page_exist(self, download_info):
@@ -23,7 +24,6 @@ class Virtuagirls:
             return True
         else:
             return False
-
     def get_models_in_page(self, download_info):
         model_list = []
         html_text = get_page_html(download_info)

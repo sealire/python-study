@@ -43,6 +43,7 @@ def download_page_image(download_info):
     page_url = get_page_url(download_info, page=page_index)  # 获取当前页码的URL地址，如果没有该页码就返回空
     if not page_url:
         return
+    download_info["current_download_info"]["page_url"] = page_url
 
     models = download_info["website_downloader"].get_models_in_page(download_info)  # 获取当前页的所有model
     model_count = len(models)
@@ -159,10 +160,8 @@ def get_image_format(image_url):
 
 
 def get_page_url(download_info, **kwargs):
-    page_url = download_info["website_info"]["url_template"].format(**kwargs)
-    download_info["current_download_info"]["page_url"] = page_url
-    if download_info["website_downloader"].check_page_exist(download_info):
-        return page_url
+    if download_info["current_download_info"]["page_index"] <= download_info["website_info"]["max_page"]:
+        return download_info["website_info"]["url_template"].format(**kwargs)
     else:
         return ""
 

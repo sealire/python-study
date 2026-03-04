@@ -22,7 +22,7 @@ class Penthouse:
         }
 
     def check_page_exist(self, download_info):
-        return download_info["current_download_info"]["page_index"] <= download_info["website_info"]["max_page"]
+        return download_info["current_download_info"]["page_index"] <= 26
     def get_models_in_page(self, download_info):
         model_list = []
         dir = self.local_base_dir + "\\page\\" + str(download_info["current_download_info"]["page_index"])
