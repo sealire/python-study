@@ -264,8 +264,8 @@ def get_website_downloaders():
 
     # website_downloaders.append(Istripper())
     # website_downloaders.append(Virtuagirls())
-    # website_downloaders.append(Penthouse2())
-    website_downloaders.append(Deskbabes())
+    website_downloaders.append(Penthouse2())
+    # website_downloaders.append(Deskbabes())
 
     return website_downloaders
 
