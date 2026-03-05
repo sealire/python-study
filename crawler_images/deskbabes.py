@@ -34,6 +34,9 @@ class Deskbabes:
         model_cards = container.find_all("a", class_='gallery-card')
         for index, model_card in enumerate(model_cards):
             model_name = model_card.find("img").get("alt")
+            index = model_name.rfind("/")
+            if index > 0:
+                model_name = model_name[:index]
             model_name = re.sub(r'[?/\'|.]', '', model_name)
             model_name = model_name.strip()
             if is_selected_model(model_name, download_info):
@@ -104,7 +107,8 @@ class Deskbabes:
         success = False
         while retry_count > 0:
             try:
-                save_image_by_chunk(image_url, image_format, model_index, sub_page_index, image_index, model_dir, headers)
+                save_image_by_chunk(image_url, image_format, model_index, sub_page_index, image_index, model_dir,
+                                    headers)
                 success = True
             except Exception as e:
                 success = False

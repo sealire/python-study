@@ -257,7 +257,7 @@ def get_selected_model_names():
     # selected_model_names.append("helga lovekaty")
     # selected_model_names.append("sybil")
     # selected_model_names.append("cindy shine")
-    selected_model_names.append("dzhili")
+    # selected_model_names.append("dzhili")
 
     return selected_model_names
 
@@ -267,9 +267,9 @@ def get_website_downloaders():
 
     # website_downloaders.append(Istripper())
     # website_downloaders.append(Virtuagirls())
-    # website_downloaders.append(Penthouse2())
+    website_downloaders.append(Penthouse2())
     # website_downloaders.append(Deskbabes())
-    website_downloaders.append(Sgirlsweb())
+    # website_downloaders.append(Sgirlsweb())
 
     return website_downloaders
 
