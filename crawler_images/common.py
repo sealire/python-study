@@ -146,9 +146,19 @@ def format_number(number, width=4):
     return f"{number:0{width}d}"
 
 
-def save_image(image_url, image_format, sub_page_index, image_index, model_dir):
+def save_image(image_url, image_format, model_index, sub_page_index, image_index, model_dir):
     img_data = requests.get(image_url, timeout=constants.http_timeout, headers=constants.http_headers).content
     with open(
-            f"{model_dir}/image_{format_number(sub_page_index + 1)}_{format_number(image_index + 1)}.{image_format}",
+            f"{model_dir}/image_{format_number(model_index)}_{format_number(sub_page_index)}_{format_number(image_index + 1)}.{image_format}",
             "wb") as f:
         f.write(img_data)
+
+
+def save_image_by_chunk(image_url, image_format, model_index, sub_page_index, image_index, model_dir, headers):
+    image_data = requests.get(image_url, stream=True, headers=headers, timeout=30)
+    with open(
+            f"{model_dir}/image_{format_number(model_index)}_{format_number(sub_page_index)}_{format_number(image_index + 1)}.{image_format}",
+            "wb") as f:
+        for chunk in image_data.iter_content(chunk_size=32):
+            if chunk:
+                f.write(chunk)

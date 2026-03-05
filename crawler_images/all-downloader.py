@@ -11,6 +11,7 @@ from crawler_images.deskbabes import Deskbabes
 from crawler_images.istripper import Istripper
 from crawler_images.penthouse import Penthouse
 from crawler_images.penthouse_2 import Penthouse2
+from crawler_images.sgirlsweb import Sgirlsweb
 from crawler_images.virtuagirls import Virtuagirls
 
 
@@ -151,7 +152,8 @@ def save_images(download_info):
                     f"{"error - image format":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}")
                 continue
 
-            save_image(image_url, image_format, current_download_info["model_url_index"], image_index,
+            save_image(image_url, image_format, current_download_info["model_index_in_page"],
+                       current_download_info["model_url_index"], image_index,
                        current_download_info["model_info"]["dir"])
             success_count = success_count + 1
             print(
@@ -181,8 +183,8 @@ def create_model_dir(website_title, page, model_name, model_dir_name):
     page_segment = "page" + format_number(seg_lower_limit) + "--page" + format_number(seg_upper_limit)
 
     model_image_dir = os.path.join(constants.base_dir, website_title, page_segment, format_number(page), model_name)
-    if os.path.exists(model_image_dir):
-        model_image_dir = os.path.join(constants.base_dir, website_title, page_segment, format_number(page), model_dir_name)
+    # if os.path.exists(model_image_dir):
+    #     model_image_dir = os.path.join(constants.base_dir, website_title, page_segment, format_number(page), model_dir_name)
     os.makedirs(model_image_dir, exist_ok=True)
     return model_image_dir
 
@@ -255,6 +257,7 @@ def get_selected_model_names():
     # selected_model_names.append("helga lovekaty")
     # selected_model_names.append("sybil")
     # selected_model_names.append("cindy shine")
+    selected_model_names.append("dzhili")
 
     return selected_model_names
 
@@ -264,8 +267,9 @@ def get_website_downloaders():
 
     # website_downloaders.append(Istripper())
     # website_downloaders.append(Virtuagirls())
-    website_downloaders.append(Penthouse2())
+    # website_downloaders.append(Penthouse2())
     # website_downloaders.append(Deskbabes())
+    website_downloaders.append(Sgirlsweb())
 
     return website_downloaders
 

@@ -5,8 +5,8 @@ from urllib.parse import urljoin
 
 import requests
 
-from crawler_images.common import get_page_html, get_model_image_html, is_selected_model, get_image_format, \
-    format_number, fixed_length, save_image, get_page_html_by_selenium, get_model_image_html_by_selenium
+from crawler_images.common import is_selected_model, get_image_format, format_number, fixed_length, save_image, \
+    get_page_html_by_selenium, get_model_image_html_by_selenium, save_image_by_chunk
 
 
 class Deskbabes:
@@ -60,72 +60,65 @@ class Deskbabes:
 
         return model_images
 
+    def save_images(self, download_info):
+        current_download_info = download_info["current_download_info"]
+        model_images = current_download_info["model_images"]
+        success_count = 0
+        image_count = len(model_images)
+        for image_index, image in enumerate(model_images):
+            image_url = image["image_url"]
+            try:
+                image_format = get_image_format(image_url)
+                if not image_format:
+                    print(
+                        f"{"error - image format":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}")
+                    continue
 
-def save_images(self, download_info):
-    current_download_info = download_info["current_download_info"]
-    model_images = current_download_info["model_images"]
-    success_count = 0
-    image_count = len(model_images)
-    for image_index, image in enumerate(model_images):
-        image_url = image["image_url"]
-        try:
-            image_format = get_image_format(image_url)
-            if not image_format:
+                if "https://deskbabesgirls.com" in image_url:
+                    self.save_image2(image_url, image_format, current_download_info["model_index_in_page"],
+                                     current_download_info["model_url_index"], image_index, image_count,
+                                     current_download_info["model_info"]["dir"], download_info)
+                else:
+                    save_image(image_url, image_format, current_download_info["model_index_in_page"],
+                               current_download_info["model_url_index"], image_index,
+                               current_download_info["model_info"]["dir"])
+
+                success_count = success_count + 1
                 print(
-                    f"{"error - image format":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}")
-                continue
+                    f"{"success":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}")
+            except Exception as e:
+                print(
+                    f"{"error - download":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}, exception:{e}")
 
-            if "https://deskbabesgirls.com" in image_url:
-                self.save_image_with_chunk(image_url, image_format, current_download_info["model_url_index"],
-                                           image_index, image_count,
-                                           current_download_info["model_info"]["dir"], download_info)
-            else:
-                save_image(image_url, image_format, current_download_info["model_url_index"], image_index,
-                           current_download_info["model_info"]["dir"])
+        return success_count
 
-            success_count = success_count + 1
-            print(
-                f"{"success":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}")
-        except Exception as e:
-            print(
-                f"{"error - download":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}, exception:{e}")
+    def save_image2(self, image_url, image_format, model_index, sub_page_index, image_index, image_count, model_dir,
+                    download_info):
+        current_download_info = download_info["current_download_info"]
+        headers = {
+            'Referer': 'https://deskbabesgirls.com',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.139 Safari/537.36',
+        }
+        retry_count = 4
+        ex = None
+        success = False
+        while retry_count > 0:
+            try:
+                save_image_by_chunk(image_url, image_format, model_index, sub_page_index, image_index, model_dir, headers)
+                success = True
+            except Exception as e:
+                success = False
+                ex = e
 
-    return success_count
+            if success:
+                break
 
+            retry_count = retry_count - 1
+            if retry_count > 0:
+                sec = 3 * retry_count
+                print(
+                    f"{"download retry":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}, sleep: {sec}秒")
+                time.sleep(sec)
 
-def save_image_with_chunk(self, image_url, image_format, sub_page_index, image_index, image_count, model_dir,
-                          download_info):
-    current_download_info = download_info["current_download_info"]
-    headers = {
-        'Referer': 'https://deskbabesgirls.com',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.139 Safari/537.36',
-    }
-    retry_count = 4
-    ex = None
-    success = False
-    while retry_count > 0:
-        try:
-            image_data = requests.get(image_url, stream=True, headers=headers)
-            with open(
-                    f"{model_dir}/image_{format_number(sub_page_index + 1)}_{format_number(image_index + 1)}.{image_format}",
-                    "wb") as f:
-                for chunk in image_data.iter_content(chunk_size=32):
-                    if chunk:
-                        f.write(chunk)
-            success = True
-        except Exception as e:
-            success = False
-            ex = e
-
-        if success:
-            break
-
-        retry_count = retry_count - 1
-        if retry_count > 0:
-            sec = 3 * retry_count
-            print(
-                f"{"download retry":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}, sleep: {sec}秒")
-            time.sleep(sec)
-
-    if not success:
-        raise ex
+        if not success:
+            raise ex

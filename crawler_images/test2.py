@@ -1,16 +1,9 @@
-import urllib
-
-import requests
-
-from crawler_images.common import get_html_by_selenium
-#
-# html_url = "https://deskbabesgirls.com/galleries/0011_sandra_shine.html"
-# html_text = get_html_by_selenium(html_url)
-# print(html_text)
+from crawler_images.common import save_image_by_chunk
 
 headers = {
-    'Referer': 'https://deskbabesgirls.com',
-    'User-Agent': 'Mozilla/5.0'
+    'Referer': 'https://www.sgirlsweb.com/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.139 Safari/537.36',
 }
-img_url = "https://deskbabesgirls.com/images/data/c0104/full/VGI0642P010010.jpg"
-urllib.request.urlretrieve(img_url, 'image.jpg')
+
+image_url = "https://static1.mibogirl.com/sybil-a/mibogirl-sybil-a-006.jpg"
+save_image_by_chunk(image_url, "jpg", 1, 1, 1, "images", headers)
