@@ -40,11 +40,11 @@ class Leehee:
 
         return model_list
 
-    def get_model_image_urls(self, download_info):
-        image_urls = []
+    def get_model_images(self, download_info):
+        model_images = []
         html_text = get_model_image_html(download_info)
         if not html_text:
-            return image_urls
+            return model_images
         container = html_text.find('div', class_='gallery')
         image_tags = container.find_all("a")
 
@@ -54,8 +54,8 @@ class Leehee:
                 continue
             image_full_url = urljoin(download_info["current_download_info"]["model_url"], image_url)
             if image_full_url and image_full_url.startswith('http'):
-                image_urls.append({
+                model_images.append({
                     "image_url": image_full_url.strip()
                 })
 
-        return image_urls
+        return model_images

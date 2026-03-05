@@ -40,11 +40,11 @@ class Penthouse2:
 
         return model_list
 
-    def get_model_image_urls(self, download_info):
-        image_urls = []
+    def get_model_images(self, download_info):
+        model_images = []
         html_text = get_model_image_html_by_selenium(download_info)
         if not html_text:
-            return image_urls
+            return model_images
 
         container = html_text.find('div', class_='space-y-6')
         grids = container.find_all('div', class_='grid')
@@ -53,8 +53,8 @@ class Penthouse2:
             for i, image in enumerate(image_tags):
                 image_url = image.get("href")
                 if image_url and image_url.startswith('http'):
-                    image_urls.append({
+                    model_images.append({
                         "image_url": image_url.strip()
                     })
 
-        return image_urls
+        return model_images

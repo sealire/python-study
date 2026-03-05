@@ -49,6 +49,6 @@ download_info_template = {
         "model_url_index": 1,
         "model_url_count": 10,
         "model_url": "model_url",
-        "model_image_urls": [],
+        "model_images": [],
     },
 }

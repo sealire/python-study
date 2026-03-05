@@ -105,26 +105,27 @@ def download_model_sub_page_image(download_info):
 
 
 def download_model_sub_page_image2(download_info):
-    image_urls = download_info["website_downloader"].get_model_image_urls(
+    model_images = download_info["website_downloader"].get_model_images(
         download_info)  # 获取当前model的所有图片地址, {"image_url": "image_url"}
-    if not image_urls:
+    if not model_images:
         return
 
     current_download_info = download_info["current_download_info"]
     model_image_dir = create_model_dir(download_info["website_info"]["title"], current_download_info["page_index"],
+                                       current_download_info["model_info"]["name"],
                                        current_download_info["model_info"]["dir_name"])
     current_download_info["model_info"]["dir"] = model_image_dir
-    current_download_info["model_image_urls"] = image_urls
+    current_download_info["model_images"] = model_images
 
     print()
     print(
-        f"{"current sub page":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, 图片数量:{len(image_urls)}")
+        f"{"current sub page":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, model_url:{current_download_info["model_url"]}, 图片数量:{len(model_images)}")
     save_model_sub_page_images(download_info)  # 下载当前model子页的所有图片
 
 
 def save_model_sub_page_images(download_info):
     current_download_info = download_info["current_download_info"]
-    image_count = len(current_download_info["model_image_urls"])
+    image_count = len(current_download_info["model_images"])
     if download_info["website_info"]["independent_download_image"]:
         success_count = download_info["website_downloader"].save_images(download_info)
     else:
@@ -138,10 +139,10 @@ def save_model_sub_page_images(download_info):
 
 def save_images(download_info):
     current_download_info = download_info["current_download_info"]
-    model_image_urls = current_download_info["model_image_urls"]
+    model_images = current_download_info["model_images"]
     success_count = 0
-    image_count = len(model_image_urls)
-    for image_index, image in enumerate(model_image_urls):
+    image_count = len(model_images)
+    for image_index, image in enumerate(model_images):
         image_url = image["image_url"]
         try:
             image_format = get_image_format(image_url)
@@ -152,12 +153,6 @@ def save_images(download_info):
 
             save_image(image_url, image_format, current_download_info["model_url_index"], image_index,
                        current_download_info["model_info"]["dir"])
-
-            # img_data = requests.get(image_url, timeout=constants.http_timeout, headers=constants.http_headers).content
-            # with open(
-            #         f"{current_download_info["model_info"]["dir"]}/image_{format_number(current_download_info["model_url_index"] + 1)}_{format_number(image_index + 1)}.{image_format}",
-            #         "wb") as f:
-            #     f.write(img_data)
             success_count = success_count + 1
             print(
                 f"{"success":<25}, thread:{download_info["thread_id"]:>2}, website:{download_info["website_info"]["title"]:<15}, page:{current_download_info["page_index"]:>3}({current_download_info["model_index_in_page"]:>3}/{current_download_info["model_count_in_page"]:>3}), image: {image_index + 1}/{image_count}, model_name:{fixed_length(current_download_info["model_info"]["name"], width=30)}, sub_page:{current_download_info["model_url_index"]:>3}/{current_download_info["model_url_count"]:>3}, image_url:{image_url}")
@@ -180,12 +175,14 @@ def get_page_url(download_info, **kwargs):
         return ""
 
 
-def create_model_dir(website_title, page, model_dir_name):
+def create_model_dir(website_title, page, model_name, model_dir_name):
     seg_lower_limit = page - (page % 100)
     seg_upper_limit = seg_lower_limit + 100
     page_segment = "page" + format_number(seg_lower_limit) + "--page" + format_number(seg_upper_limit)
 
-    model_image_dir = os.path.join(constants.base_dir, website_title, page_segment, format_number(page), model_dir_name)
+    model_image_dir = os.path.join(constants.base_dir, website_title, page_segment, format_number(page), model_name)
+    if os.path.exists(model_image_dir):
+        model_image_dir = os.path.join(constants.base_dir, website_title, page_segment, format_number(page), model_dir_name)
     os.makedirs(model_image_dir, exist_ok=True)
     return model_image_dir
 

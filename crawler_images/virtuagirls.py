@@ -37,18 +37,18 @@ class Virtuagirls:
 
         return model_list
 
-    def get_model_image_urls(self, download_info):
-        image_urls = []
+    def get_model_images(self, download_info):
+        model_images = []
         html_text = get_model_image_html(download_info)
         if not html_text:
-            return image_urls
+            return model_images
         container = html_text.find('div', class_='content-section')
         image_tags = container.find_all("a", class_='photo-thumb')
         for i, image in enumerate(image_tags):
             image_url = image.get("href")
             if image_url and image_url.startswith('http'):
-                image_urls.append({
+                model_images.append({
                     "image_url": image_url.strip()
                 })
 
-        return image_urls
+        return model_images

@@ -71,11 +71,11 @@ class Sgirlsweb:
         else:
             return page_index
 
-    def get_model_image_urls(self, download_info):
-        image_urls = []
+    def get_model_images(self, download_info):
+        model_images = []
         html_text = get_model_image_html(download_info)
         if not html_text:
-            return image_urls
+            return model_images
         container = html_text.find('ul', id='iids')
         image_tags = container.find_all("li", class_='fl-photo-item')
         for i, image in enumerate(image_tags):
@@ -86,8 +86,8 @@ class Sgirlsweb:
                 image_url = image_url.replace("thumbs-photos/480/", "thumbs-photos/1080/")
                 # index = image_url.rfind("/") + 1
                 # image_url = image_url[:index] + "mibogirl-" + image_url[index:]
-                image_urls.append({
+                model_images.append({
                     "image_url": image_url.strip()
                 })
 
-        return image_urls
+        return model_images

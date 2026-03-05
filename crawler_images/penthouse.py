@@ -50,8 +50,8 @@ class Penthouse:
 
         return model_list
 
-    def get_model_image_urls(self, download_info):
-        image_urls = []
+    def get_model_images(self, download_info):
+        model_images = []
         with open(self.local_base_dir + download_info["current_download_info"]["model_url"], 'r', encoding='utf-8') as file:
             html_text = file.read()
         html_text = BeautifulSoup(html_text, "html.parser")
@@ -62,8 +62,8 @@ class Penthouse:
             for i, image in enumerate(image_tags):
                 image_url = image.get("href")
                 if image_url and image_url.startswith('http'):
-                    image_urls.append({
+                    model_images.append({
                         "image_url": image_url.strip()
                     })
 
-        return image_urls
+        return model_images
