@@ -42,7 +42,7 @@ class Penthouse:
             model_name = html_file[start + 1:end]
             index = model_name.find(" - ")
             model_name = model_name[:index]
-            model_name = re.sub(r'[?/\'|.]', '', model_name)
+            model_name = re.sub(r"[～~@!?/'.]", '', model_name)
             model_name = model_name.strip()
             if is_selected_model(model_name, download_info):
                 model_url = html_file.replace(self.local_base_dir, "")

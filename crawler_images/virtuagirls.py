@@ -29,7 +29,7 @@ class Virtuagirls:
         model_cards = container.find_all("a", class_='gallery-card')
         for index, model_card in enumerate(model_cards):
             model_name = model_card.find("img").get("alt")
-            model_name = re.sub(r'[?/\'|.]', '', model_name)
+            model_name = re.sub(r"[～~@!?/'.]", '', model_name)
             model_name = model_name.strip()
             if is_selected_model(model_name, download_info):
                 model_url = model_card.get("href")

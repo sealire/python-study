@@ -37,7 +37,7 @@ class Deskbabes:
             index = model_name.rfind("/")
             if index > 0:
                 model_name = model_name[:index]
-            model_name = re.sub(r'[?/\'|.]', '', model_name)
+            model_name = re.sub(r"[～~@!?/'.]", '', model_name)
             model_name = model_name.strip()
             if is_selected_model(model_name, download_info):
                 model_url = model_card.get("href")

@@ -37,7 +37,7 @@ class Sgirlsweb:
         for model_index, model_card in enumerate(model_cards):
             model_h2 = model_card.find("div", class_="item-pdat-text").find("h2")
             model_name = model_h2.get_text(strip=True)
-            model_name = re.sub(r'[?/\'|.]', '', model_name)
+            model_name = re.sub(r"[～~@!?/'.]", '', model_name)
             model_name = model_name.strip()
             if is_selected_model(model_name, download_info):
                 model_name_split = model_name.replace(' ', "-").lower()
